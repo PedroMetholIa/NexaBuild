@@ -1,12 +1,28 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { Session } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('NexaBuild');
+export class App implements OnInit {
+  session = signal<Session | null>(null);
+
+  constructor(private auth: AuthService, readonly router: Router) {}
+
+  ngOnInit() {
+    this.auth.getSession().then(({ data }) => this.session.set(data.session));
+    this.auth.onAuthChange((_, session) => {
+      this.session.set(session);
+      if (!session) this.router.navigate(['/auth']);
+    });
+  }
+
+  async logout() {
+    await this.auth.signOut();
+  }
 }

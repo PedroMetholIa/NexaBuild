@@ -1,0 +1,40 @@
+<div class="page">
+  <div class="page-header">
+    <h1>{{ esNueva() ? 'Nueva persona' : 'Editar persona' }}</h1>
+    <a routerLink="/personas" class="btn-back">← Volver</a>
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" formControlName="nombre" placeholder="Nombre completo" />
+      </div>
+
+      <div class="form-group">
+        <label>Teléfonos</label>
+        <div formArrayName="telefonos">
+          @for (ctrl of telefonos.controls; track $index) {
+            <div class="telefono-row">
+              <input type="tel" [formControlName]="$index" placeholder="Ej: 099 123 456" />
+              <button type="button" class="btn-remove" (click)="removeTelefono($index)">✕</button>
+            </div>
+          }
+        </div>
+        <button type="button" class="btn-add-phone" (click)="addTelefono()">
+          + Agregar teléfono
+        </button>
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

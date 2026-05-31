@@ -1,0 +1,31 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>{{ isLogin() ? 'Iniciar sesión' : 'Crear cuenta' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="tu@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Cargando...' : (isLogin() ? 'Entrar' : 'Registrarse') }}
+      </button>
+    </form>
+
+    <p class="toggle-link">
+      {{ isLogin() ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?' }}
+      <a href="#" (click)="toggle($event)">
+        {{ isLogin() ? 'Registrate' : 'Iniciá sesión' }}
+      </a>
+    </p>
+  </div>
+</div>
