@@ -66,13 +66,18 @@ export class AuthComponent {
       if (this.isLogin()) {
         const { data, error } = await this.auth.signIn(email, password);
         if (error) throw error;
-        if (data.user) await this.userActivity.upsertLogin(data.user.id, email);
+        if (data.user) {
+          const { error: errActivity } = await this.userActivity.upsertLogin(data.user.id, email);
+          if (errActivity) throw errActivity;
+        }
       } else {
         const { data, error } = await this.auth.signUp(email, password);
         if (error) throw error;
         if (data.user) {
-          await this.usuarioService.create(data.user.id, email, nombre.trim(), apellido.trim());
-          await this.userActivity.upsertLogin(data.user.id, email);
+          const { error: errUsuario } = await this.usuarioService.create(data.user.id, email, nombre.trim(), apellido.trim());
+          if (errUsuario) throw errUsuario;
+          const { error: errActivity } = await this.userActivity.upsertLogin(data.user.id, email);
+          if (errActivity) throw errActivity;
         }
       }
       this.router.navigate(['/home']);
