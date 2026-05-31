@@ -1,0 +1,62 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Usuarios</h1>
+      <p class="subtitle">Historial de accesos al sistema</p>
+    </div>
+    <div class="stats">
+      <div class="stat-badge online">
+        <span class="dot"></span>
+        {{ onlineCount }} en línea
+      </div>
+      <div class="stat-badge total">
+        {{ users().length }} total
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="empty">Cargando...</div>
+  } @else if (users().length === 0) {
+    <div class="empty">No hay registros de actividad aún.</div>
+  } @else {
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Último login</th>
+            <th>Última actividad</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.user_id) {
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="avatar">
+                    {{ (user.usuario?.nombre ?? user.email)[0].toUpperCase() }}
+                  </div>
+                  <div class="user-info">
+                    @if (user.usuario) {
+                      <span class="user-name">{{ user.usuario.nombre }} {{ user.usuario.apellido }}</span>
+                    }
+                    <span class="user-email">{{ user.email }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.last_login | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ user.last_seen | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="badge" [class.badge-online]="user.is_online" [class.badge-offline]="!user.is_online">
+                  {{ user.is_online ? 'En línea' : 'Desconectado' }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

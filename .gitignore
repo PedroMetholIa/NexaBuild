@@ -42,3 +42,9 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files (contain credentials — never commit these)
+src/environments/environment.ts
+src/environments/environment.prod.ts
+src/environment.ts
+src/environment.prod.ts
