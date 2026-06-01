@@ -5,6 +5,9 @@ import { UserActivityService } from './services/user-activity.service';
 import { UsuarioService } from './services/usuario.service';
 import { Session } from '@supabase/supabase-js';
 
+const USER_NAME_KEY = 'nx_user_name';
+const USER_ADMIN_KEY = 'nx_user_admin';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -14,7 +17,7 @@ import { Session } from '@supabase/supabase-js';
 export class App implements OnInit {
   session = signal<Session | null>(null);
   isAdmin = signal(false);
-  userName = signal('');
+  userName = signal(sessionStorage.getItem(USER_NAME_KEY) ?? '');
 
   constructor(
     private auth: AuthService,
@@ -26,25 +29,31 @@ export class App implements OnInit {
   ngOnInit() {
     this.auth.getSession().then(async ({ data }) => {
       this.session.set(data.session);
-      if (data.session) await this.loadAdminStatus(data.session.user.id);
+      if (data.session) await this.loadUserProfile(data.session.user.id);
     });
 
     this.auth.onAuthChange(async (_, session) => {
       this.session.set(session);
       if (session) {
-        await this.loadAdminStatus(session.user.id);
+        await this.loadUserProfile(session.user.id);
       } else {
         this.isAdmin.set(false);
         this.userName.set('');
+        sessionStorage.removeItem(USER_NAME_KEY);
+        sessionStorage.removeItem(USER_ADMIN_KEY);
         this.router.navigate(['/auth']);
       }
     });
   }
 
-  private async loadAdminStatus(userId: string) {
+  private async loadUserProfile(userId: string) {
     const { data } = await this.usuarioService.getByUserId(userId);
-    this.isAdmin.set(data?.administrador ?? false);
-    this.userName.set(data ? `${data.nombre} ${data.apellido}` : '');
+    const name = data ? `${data.nombre} ${data.apellido}` : '';
+    const admin = data?.administrador ?? false;
+    this.userName.set(name);
+    this.isAdmin.set(admin);
+    sessionStorage.setItem(USER_NAME_KEY, name);
+    sessionStorage.setItem(USER_ADMIN_KEY, String(admin));
   }
 
   async logout() {
