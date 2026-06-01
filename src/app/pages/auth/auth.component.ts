@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, Input, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserActivityService } from '../../services/user-activity.service';
 import { UsuarioService } from '../../services/usuario.service';
@@ -11,7 +11,10 @@ import { UsuarioService } from '../../services/usuario.service';
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit {
+  @Input() modal = false;
+  @Input() startRegister = false;
+
   form: FormGroup;
   isLogin = signal(true);
   loading = signal(false);
@@ -23,7 +26,8 @@ export class AuthComponent {
     private auth: AuthService,
     private userActivity: UserActivityService,
     private usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -32,6 +36,11 @@ export class AuthComponent {
       nombre: [''],
       apellido: [''],
     });
+  }
+
+  ngOnInit() {
+    const register = this.route.snapshot.queryParamMap.get('register');
+    if (register === '1' || this.startRegister) this.isLogin.set(false);
   }
 
   toggle(e: Event) {
@@ -93,7 +102,7 @@ export class AuthComponent {
       }
 
       const { data: perfil } = await this.usuarioService.getByUserId(userId);
-      this.router.navigate([perfil?.administrador ? '/admin' : '/personas']);
+      this.router.navigate([perfil?.administrador ? '/admin' : '/']);
     } catch (err: any) {
       this.error.set(err.message ?? 'Ocurrió un error');
     } finally {

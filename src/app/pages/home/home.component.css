@@ -1,29 +1,70 @@
+/* ── Variables heredadas del layout ── */
+:host {
+  --ac:      #7C5CFC;
+  --ac-dim:  color-mix(in srgb,#7C5CFC 12%,transparent);
+  --ac-bd:   color-mix(in srgb,#7C5CFC 28%,transparent);
+  --white:   #1A1A2E;
+  --sub:     #696987;
+  --muted:   #8A8AAA;
+  --border:  rgba(0,0,0,0.08);
+  display: block;
+  font-family: 'Outfit', sans-serif;
+}
+
 .page {
-  padding: 2rem;
-  max-width: 1000px;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 2rem 2.5rem;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.page-header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.section-tag {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ac);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-tag::before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--ac);
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: clamp(22px, 3vw, 32px);
   font-weight: 700;
-  color: #1e293b;
+  letter-spacing: -.3px;
+  color: var(--white);
   margin: 0;
+  line-height: 1.2;
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  margin: 0.25rem 0 0;
+  font-size: 15px;
+  color: var(--sub);
+  margin: 0;
+  font-weight: 400;
 }
 
+/* ── Stat badges ── */
 .stats {
   display: flex;
   gap: 0.75rem;
@@ -38,6 +79,7 @@ h1 {
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
+  font-family: 'Outfit', sans-serif;
 }
 
 .stat-badge.online {
@@ -47,9 +89,9 @@ h1 {
 }
 
 .stat-badge.total {
-  background: #f8fafc;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: color-mix(in srgb,#7C5CFC 6%,#F0F2F5);
+  color: var(--sub);
+  border: 1px solid var(--ac-bd);
 }
 
 .dot {
@@ -62,51 +104,50 @@ h1 {
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50%       { opacity: 0.4; }
 }
 
+/* ── Card / Tabla ── */
 .card {
-  background: white;
+  background: #ffffff;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  font-family: 'Outfit', sans-serif;
 }
 
 thead tr {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: color-mix(in srgb,#7C5CFC 4%,#F0F2F5);
+  border-bottom: 1px solid var(--border);
 }
 
 th {
   padding: 0.875rem 1rem;
   text-align: left;
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
 }
 
 td {
   padding: 0.875rem 1rem;
   font-size: 0.9375rem;
-  color: #334155;
-  border-bottom: 1px solid #f1f5f9;
+  color: var(--white);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
-tr:last-child td {
-  border-bottom: none;
-}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: color-mix(in srgb,#7C5CFC 3%,#ffffff); }
 
-tr:hover td {
-  background: #f8fafc;
-}
-
+/* ── User cell ── */
 .user-cell {
   display: flex;
   align-items: center;
@@ -121,21 +162,22 @@ tr:hover td {
 
 .user-name {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--white);
   font-size: 0.9375rem;
 }
 
 .user-email {
   font-size: 0.8125rem;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #eef2ff;
-  color: #6366f1;
+  background: var(--ac-dim);
+  border: 0.5px solid var(--ac-bd);
+  color: var(--ac);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,12 +186,14 @@ tr:hover td {
   flex-shrink: 0;
 }
 
+/* ── Estado badges ── */
 .badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.8125rem;
   font-weight: 500;
+  font-family: 'Outfit', sans-serif;
 }
 
 .badge-online {
@@ -159,13 +203,36 @@ tr:hover td {
 }
 
 .badge-offline {
-  background: #f8fafc;
-  color: #94a3b8;
-  border: 1px solid #e2e8f0;
+  background: color-mix(in srgb,#7C5CFC 5%,#F0F2F5);
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
+/* ── Vacío / cargando ── */
 .empty {
-  color: #94a3b8;
+  color: var(--muted);
   text-align: center;
   padding: 3rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Botón forzar cierre ── */
+.btn-force-logout {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: 'Outfit', sans-serif;
+  color: #dc2626;
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-force-logout:hover:not(:disabled) { background: #fee2e2; }
+.btn-force-logout:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media(max-width:900px) {
+  .page { padding: 1.5rem 1.25rem; }
 }

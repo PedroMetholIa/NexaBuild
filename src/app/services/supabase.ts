@@ -8,6 +8,13 @@ import { environment } from '../../environments/environment';
 export class Supabase {
   readonly client: SupabaseClient = createClient(
     environment.supabaseUrl,
-    environment.supabaseKey
+    environment.supabaseKey,
+    {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
+    }
   );
 }

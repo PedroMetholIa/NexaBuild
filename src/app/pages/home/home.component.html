@@ -1,8 +1,9 @@
 <div class="page">
   <div class="page-header">
     <div>
-      <h1>Administración</h1>
-      <p class="subtitle">Usuarios registrados y sus sesiones activas</p>
+      <span class="section-tag">Administración</span>
+      <h1>Usuarios activos</h1>
+      <p class="subtitle">Sesiones registradas y su estado en tiempo real</p>
     </div>
     <div class="stats">
       <div class="stat-badge online">
@@ -28,6 +29,7 @@
             <th>Último login</th>
             <th>Última actividad</th>
             <th>Estado</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -52,6 +54,16 @@
                 <span class="badge" [class.badge-online]="user.is_online" [class.badge-offline]="!user.is_online">
                   {{ user.is_online ? 'En línea' : 'Desconectado' }}
                 </span>
+              </td>
+              <td>
+                @if (user.is_online && user.user_id !== currentUserId()) {
+                  <button
+                    class="btn-force-logout"
+                    [disabled]="closing() === user.user_id"
+                    (click)="forceLogout(user.user_id)">
+                    {{ closing() === user.user_id ? 'Cerrando...' : 'Forzar cierre' }}
+                  </button>
+                }
               </td>
             </tr>
           }

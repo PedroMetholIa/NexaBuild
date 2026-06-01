@@ -1,5 +1,5 @@
-<div class="auth-container">
-  <div class="auth-card">
+<div [class.auth-container]="!modal">
+  <div [class.auth-card]="!modal">
     <h2>{{ isLogin() ? 'Iniciar sesión' : 'Crear cuenta' }}</h2>
 
     <form [formGroup]="form" (ngSubmit)="submit()">

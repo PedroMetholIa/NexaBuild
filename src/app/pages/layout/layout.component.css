@@ -1,0 +1,158 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  --bg-base:   #F0F2F5;
+  --bg-deep:   #E4E7ED;
+  --bg-nav:    rgba(240,242,245,.95);
+  --card-bg:   #FFFFFF;
+  --white:     #1A1A2E;
+  --sub:       #696987;
+  --muted:     #8A8AAA;
+  --border:    rgba(0,0,0,0.08);
+  --bd2:       rgba(0,0,0,0.14);
+  --ac:        #7C5CFC;
+  --ac-dim:    color-mix(in srgb,#7C5CFC 12%,transparent);
+  --ac-bd:     color-mix(in srgb,#7C5CFC 28%,transparent);
+  --ac-glow:   color-mix(in srgb,#7C5CFC 18%,transparent);
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-base);
+  color: var(--white);
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-nav);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: .75rem 0;
+}
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; width: 100%; }
+.nav-container { display: flex; align-items: center; justify-content: space-between; }
+
+.logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.logo-text { font-size: 26px; font-weight: 700; letter-spacing: -.5px; color: var(--white); line-height: 1.4; }
+.logo-text em { font-style: normal; color: #7C5CFC; }
+
+.nav-actions { display: flex; align-items: center; gap: 1.25rem; }
+
+.nav-login {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--sub);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .15s;
+  white-space: nowrap;
+}
+.nav-login:hover { color: var(--white); }
+
+.nav-btn {
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: 'Outfit', sans-serif;
+  color: #ffffff;
+  background: linear-gradient(135deg, #7C5CFC 0%, #00BCD4 100%);
+  border: none;
+  border-radius: 7px;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity .15s, transform .15s;
+  box-shadow: 0 4px 22px var(--ac-glow);
+  white-space: nowrap;
+}
+.nav-btn:hover { opacity: .88; transform: translateY(-1px); box-shadow: 0 6px 28px var(--ac-glow); }
+
+.nav-user-name { font-size: 14px; font-weight: 600; color: var(--white); }
+
+.nav-logout {
+  background: transparent;
+  color: var(--sub);
+  border: 1px solid var(--bd2);
+  box-shadow: none;
+  font-size: 13.5px;
+}
+.nav-logout:hover { background: rgba(0,0,0,0.04); opacity: 1; transform: none; box-shadow: none; color: var(--white); }
+
+/* ── MAIN ── */
+main { flex: 1; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+footer p { font-size: 12px; color: var(--sub); }
+
+/* ── MODAL ── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 30, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+  animation: slideUp .18s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background .15s, color .15s;
+}
+.modal-close:hover { background: #f1f5f9; color: #1e293b; }
+
+@media(max-width:900px) {
+  .container { padding: 0 1.25rem; }
+  .nav-login { display: none; }
+}
