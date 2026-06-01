@@ -74,24 +74,26 @@ export class AuthComponent {
     this.passwordMismatch.set(false);
 
     try {
+      let userId: string;
+
       if (this.isLogin()) {
         const { data, error } = await this.auth.signIn(email, password);
         if (error) throw error;
-        if (data.user) {
-          const { error: errActivity } = await this.userActivity.upsertLogin(data.user.id, email);
-          if (errActivity) throw errActivity;
-        }
+        userId = data.user!.id;
+        const { error: errActivity } = await this.userActivity.upsertLogin(userId, email);
+        if (errActivity) throw errActivity;
       } else {
         const { data, error } = await this.auth.signUp(email, password);
         if (error) throw error;
-        if (data.user) {
-          const { error: errUsuario } = await this.usuarioService.create(data.user.id, email, nombre.trim(), apellido.trim());
-          if (errUsuario) throw errUsuario;
-          const { error: errActivity } = await this.userActivity.upsertLogin(data.user.id, email);
-          if (errActivity) throw errActivity;
-        }
+        userId = data.user!.id;
+        const { error: errUsuario } = await this.usuarioService.create(userId, email, nombre.trim(), apellido.trim());
+        if (errUsuario) throw errUsuario;
+        const { error: errActivity } = await this.userActivity.upsertLogin(userId, email);
+        if (errActivity) throw errActivity;
       }
-      this.router.navigate(['/home']);
+
+      const { data: perfil } = await this.usuarioService.getByUserId(userId);
+      this.router.navigate([perfil?.administrador ? '/admin' : '/personas']);
     } catch (err: any) {
       this.error.set(err.message ?? 'Ocurrió un error');
     } finally {

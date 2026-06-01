@@ -2,7 +2,9 @@
   <nav class="navbar">
     <span class="brand">NexaBuild</span>
     <div class="nav-links">
-      <a (click)="router.navigate(['/home'])" class="nav-link">Inicio</a>
+      @if (isAdmin()) {
+        <a (click)="router.navigate(['/admin'])" class="nav-link">Administración</a>
+      }
       <a (click)="router.navigate(['/personas'])" class="nav-link">Personas</a>
       <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
     </div>
