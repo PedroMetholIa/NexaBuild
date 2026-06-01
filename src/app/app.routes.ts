@@ -16,6 +16,14 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
+      {
+        path: 'nexajuegos',
+        loadComponent: () => import('./pages/nexajuegos/nexajuegos.component').then((m) => m.NexaJuegosComponent),
+      },
+      {
+        path: 'nexateg',
+        loadComponent: () => import('./pages/nexateg/nexateg.component').then((m) => m.NexaTegComponent),
+      },
     ],
   },
   {

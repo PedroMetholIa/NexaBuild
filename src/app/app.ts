@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { UserActivityService } from './services/user-activity.service';
 import { UsuarioService } from './services/usuario.service';
@@ -14,7 +13,7 @@ const INACTIVITY_CHECK_MS = 60_000;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -22,9 +21,6 @@ export class App implements OnInit, OnDestroy {
   session = signal<Session | null>(null);
   isAdmin = signal(false);
   userName = signal(sessionStorage.getItem(USER_NAME_KEY) ?? '');
-
-  private currentUrl = signal('/');
-  isLanding = computed(() => this.currentUrl() === '/');
 
   private heartbeatInterval?: ReturnType<typeof setInterval>;
   private inactivityInterval?: ReturnType<typeof setInterval>;
@@ -37,12 +33,7 @@ export class App implements OnInit, OnDestroy {
     private userActivity: UserActivityService,
     private usuarioService: UsuarioService,
     readonly router: Router
-  ) {
-    this.currentUrl.set(this.router.url);
-    this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe(e => this.currentUrl.set((e as NavigationEnd).urlAfterRedirects));
-  }
+  ) {}
 
   async ngOnInit() {
     const { data: { session: initial } } = await this.auth.getSession();

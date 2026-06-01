@@ -1,0 +1,132 @@
+<div class="hero-wrap">
+  <div class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="tag">Videojuegos Indie + IA</span>
+        <h1>Publica tu juego, <em>conoce a tus jugadores</em></h1>
+        <p class="hero-sub">Plataforma indie con analítica IA de jugadores en tiempo real.</p>
+        <div class="hero-actions">
+          <a [routerLink]="['/nexajuegos']" fragment="contacto" class="btn btn-fill">Publicar mi juego →</a>
+          <a [routerLink]="['/nexajuegos']" fragment="juegos" class="btn btn-ghost">Ver catálogo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-wrap" id="juegos">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">Juegos</span>
+          <h2>Catálogo de la plataforma</h2>
+          <p class="section-lead">Títulos indie publicados con analítica IA integrada.</p>
+        </div>
+        <div class="section-logo">
+          <svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="8" width="26" height="14" rx="4.5" fill="none" stroke="url(#sj1)" stroke-width="1.4"/>
+            <path d="M3 8.5 Q4.5 4 9 4 L13 4" stroke="url(#sj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M25 8.5 Q23.5 4 19 4 L15 4" stroke="url(#sj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <rect x="4.5" y="13.6" width="6" height="1.8" rx=".9" fill="url(#sj1)"/>
+            <rect x="6.6" y="11.5" width="1.8" height="6" rx=".9" fill="url(#sj1)"/>
+            <circle cx="20.5" cy="13" r="1.5" fill="url(#sj1)"/>
+            <circle cx="23" cy="15.5" r="1.5" fill="url(#sj1)" opacity=".5"/>
+            <defs>
+              <linearGradient id="sj1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FF4757"/>
+                <stop offset="100%" stop-color="#E05C8A"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="section-brand-text">Nexa<em>Juegos</em></span>
+        </div>
+      </div>
+      <div class="grid-3">
+
+        <a routerLink="/nexateg" class="card prod-card">
+          <div class="prod-header">
+            <svg width="210" height="32" viewBox="0 0 210 32" fill="none">
+              <!-- Globe outline (subtle dashed circle) -->
+              <circle cx="13" cy="13" r="10" fill="none" stroke="url(#nt1)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
+              <!-- N arrow -->
+              <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nt1)"/>
+              <!-- E arrow -->
+              <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nt1)"/>
+              <!-- S arrow -->
+              <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nt1)"/>
+              <!-- W arrow -->
+              <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nt1)"/>
+              <!-- Intercardinal stubs (NE NW SE SW) -->
+              <line x1="16.5" y1="9.5" x2="18.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+              <line x1="9.5" y1="9.5" x2="7.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+              <line x1="16.5" y1="16.5" x2="18.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+              <line x1="9.5" y1="16.5" x2="7.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+              <!-- Inner ring -->
+              <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nt1)" stroke-width="0.8" opacity="0.35"/>
+              <!-- Center dot -->
+              <circle cx="13" cy="13" r="2.2" fill="url(#nt1)"/>
+              <text x="33" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Teg</tspan></text>
+              <defs>
+                <linearGradient id="nt1" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF4757"/>
+                  <stop offset="100%" stop-color="#E05C8A"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <p class="prod-desc">Juego de estrategia de guerra para 2-6 jugadores: conquistá territorios, y dominá a tus rivales.</p>
+        </a>
+
+        <div class="card prod-card empty-card"></div>
+        <div class="card prod-card empty-card"></div>
+        <div class="card prod-card empty-card"></div>
+        <div class="card prod-card empty-card"></div>
+        <div class="card prod-card empty-card"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-box" id="contacto">
+  <div class="contact-inner">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <span class="section-tag">Contacto</span>
+          <h2>Hablemos</h2>
+          <p class="contact-lead">¿Tenés un juego indie? <br>Respondemos en menos de 48 horas.</p>
+        </div>
+        <div>
+          <div class="form-row">
+            <div class="form-field"><label>Nombre</label><input type="text" placeholder="Tu nombre"/></div>
+            <div class="form-field"><label>Email</label><input type="email" placeholder="tu&#64;estudio.com"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Estudio</label><input type="text" placeholder="Nombre del estudio"/></div>
+            <div class="form-field">
+              <label>Género</label>
+              <select>
+                <option value="" disabled selected>Seleccioná</option>
+                <option>Estrategia</option>
+                <option>Acción / Aventura</option>
+                <option>RPG</option>
+                <option>Puzzle</option>
+                <option>Plataformero</option>
+                <option>Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Mensaje</label>
+            <textarea placeholder="Contanos sobre tu juego..."></textarea>
+          </div>
+          <button class="btn-submit" [disabled]="submitted()" (click)="submitForm()">
+            {{ submitted() ? '✓ Enviado — te contactamos pronto' : 'Enviar consulta →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
