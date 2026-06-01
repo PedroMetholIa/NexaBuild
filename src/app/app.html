@@ -6,6 +6,9 @@
         <a (click)="router.navigate(['/admin'])" class="nav-link">Administración</a>
       }
       <a (click)="router.navigate(['/personas'])" class="nav-link">Personas</a>
+      @if (userName()) {
+        <span class="nav-user">{{ userName() }}</span>
+      }
       <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
     </div>
   </nav>

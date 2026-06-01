@@ -14,6 +14,7 @@ import { Session } from '@supabase/supabase-js';
 export class App implements OnInit {
   session = signal<Session | null>(null);
   isAdmin = signal(false);
+  userName = signal('');
 
   constructor(
     private auth: AuthService,
@@ -34,6 +35,7 @@ export class App implements OnInit {
         await this.loadAdminStatus(session.user.id);
       } else {
         this.isAdmin.set(false);
+        this.userName.set('');
         this.router.navigate(['/auth']);
       }
     });
@@ -42,6 +44,7 @@ export class App implements OnInit {
   private async loadAdminStatus(userId: string) {
     const { data } = await this.usuarioService.getByUserId(userId);
     this.isAdmin.set(data?.administrador ?? false);
+    this.userName.set(data ? `${data.nombre} ${data.apellido}` : '');
   }
 
   async logout() {
