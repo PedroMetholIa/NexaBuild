@@ -12,12 +12,21 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1);
 }
 
-const content = `export const environment = {
+const prodContent = `export const environment = {
   production: true,
   supabaseUrl: '${supabaseUrl}',
   supabaseKey: '${supabaseKey}',
 };
 `;
 
-writeFileSync(join(envDir, 'environment.prod.ts'), content);
+const devContent = `export const environment = {
+  production: false,
+  supabaseUrl: '${supabaseUrl}',
+  supabaseKey: '${supabaseKey}',
+};
+`;
+
+writeFileSync(join(envDir, 'environment.prod.ts'), prodContent);
+writeFileSync(join(envDir, 'environment.ts'), devContent);
 console.log('environment.prod.ts generated successfully.');
+console.log('environment.ts generated successfully.');
