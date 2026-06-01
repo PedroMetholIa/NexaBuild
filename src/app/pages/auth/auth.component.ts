@@ -45,7 +45,18 @@ export class AuthComponent {
   async submit() {
     const { email, password, confirmPassword, nombre, apellido } = this.form.value;
 
-    if (this.form.get('email')?.invalid || this.form.get('password')?.invalid) return;
+    if (this.form.get('email')?.invalid) {
+      this.error.set('Ingresá un email válido');
+      return;
+    }
+    if (this.form.get('password')?.hasError('minlength')) {
+      this.error.set('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    if (this.form.get('password')?.invalid) {
+      this.error.set('La contraseña es requerida');
+      return;
+    }
 
     if (!this.isLogin()) {
       if (password !== confirmPassword) {
