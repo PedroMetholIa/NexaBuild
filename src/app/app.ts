@@ -3,12 +3,13 @@ import { RouterOutlet, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { UserActivityService } from './services/user-activity.service';
 import { UsuarioService } from './services/usuario.service';
+import { UserStateService } from './services/user-state.service';
 import { Session, RealtimeChannel } from '@supabase/supabase-js';
 
 const USER_NAME_KEY = 'nx_user_name';
 const USER_ADMIN_KEY = 'nx_user_admin';
 const HEARTBEAT_MS = 5 * 60 * 1000;
-const INACTIVITY_MS = 30 * 60 * 1000;
+const INACTIVITY_MS = 60 * 60 * 1000;
 const INACTIVITY_CHECK_MS = 60_000;
 
 @Component({
@@ -32,7 +33,8 @@ export class App implements OnInit, OnDestroy {
     private auth: AuthService,
     private userActivity: UserActivityService,
     private usuarioService: UsuarioService,
-    readonly router: Router
+    readonly router: Router,
+    _userState: UserStateService   // inicialización temprana del singleton
   ) {}
 
   async ngOnInit() {
@@ -76,10 +78,11 @@ export class App implements OnInit, OnDestroy {
   private startMonitoring(userId: string) {
     this.stopMonitoring();
 
-    this.heartbeatInterval = setInterval(
-      () => this.userActivity.updateLastSeen(userId),
-      HEARTBEAT_MS
-    );
+    this.heartbeatInterval = setInterval(() => {
+      if (Date.now() - this.lastActivity < INACTIVITY_MS) {
+        this.userActivity.updateLastSeen(userId);
+      }
+    }, HEARTBEAT_MS);
 
     this.lastActivity = Date.now();
     const events: (keyof WindowEventMap)[] = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];

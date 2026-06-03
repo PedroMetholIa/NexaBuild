@@ -44,45 +44,39 @@
       </div>
       <div class="grid-3">
 
-        <a routerLink="/nexateg" class="card prod-card">
-          <div class="prod-header">
-            <svg width="210" height="32" viewBox="0 0 210 32" fill="none">
-              <!-- Globe outline (subtle dashed circle) -->
-              <circle cx="13" cy="13" r="10" fill="none" stroke="url(#nt1)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
-              <!-- N arrow -->
-              <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nt1)"/>
-              <!-- E arrow -->
-              <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nt1)"/>
-              <!-- S arrow -->
-              <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nt1)"/>
-              <!-- W arrow -->
-              <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nt1)"/>
-              <!-- Intercardinal stubs (NE NW SE SW) -->
-              <line x1="16.5" y1="9.5" x2="18.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-              <line x1="9.5" y1="9.5" x2="7.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-              <line x1="16.5" y1="16.5" x2="18.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-              <line x1="9.5" y1="16.5" x2="7.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-              <!-- Inner ring -->
-              <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nt1)" stroke-width="0.8" opacity="0.35"/>
-              <!-- Center dot -->
-              <circle cx="13" cy="13" r="2.2" fill="url(#nt1)"/>
-              <text x="33" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Teg</tspan></text>
-              <defs>
-                <linearGradient id="nt1" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#FF4757"/>
-                  <stop offset="100%" stop-color="#E05C8A"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <p class="prod-desc">Juego de estrategia de guerra para 2-6 jugadores: conquistá territorios, y dominá a tus rivales.</p>
-        </a>
+        @for (j of juegos; track j.id_producto) {
+          <div [id]="j.id_producto"
+               class="card prod-card"
+               [class.prod-card--clickable]="canNavigate(j) || j.req_suscripcion"
+               (click)="navigate(j)">
 
-        <div class="card prod-card empty-card"></div>
-        <div class="card prod-card empty-card"></div>
-        <div class="card prod-card empty-card"></div>
-        <div class="card prod-card empty-card"></div>
-        <div class="card prod-card empty-card"></div>
+            @if (j.req_suscripcion && !isSubscribed(j.id_producto)) {
+              <span class="lock-chip"><i class="ti ti-lock"></i></span>
+            }
+            @if (j.req_suscripcion && isSubscribed(j.id_producto)) {
+              <span class="check-chip"><i class="ti ti-check"></i></span>
+            }
+
+            <div class="prod-header">
+              @switch (j.id_producto) {
+                @case ('NexaTeg') {
+                  <svg width="210" height="32" viewBox="0 0 210 32" fill="none"><circle cx="13" cy="13" r="10" fill="none" stroke="url(#nt1)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/><path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nt1)"/><path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nt1)"/><path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nt1)"/><path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nt1)"/><line x1="16.5" y1="9.5" x2="18.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="9.5" y1="9.5" x2="7.5" y2="7.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="16.5" y1="16.5" x2="18.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="9.5" y1="16.5" x2="7.5" y2="18.5" stroke="url(#nt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nt1)" stroke-width="0.8" opacity="0.35"/><circle cx="13" cy="13" r="2.2" fill="url(#nt1)"/><text x="33" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Teg</tspan></text><defs><linearGradient id="nt1" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FF4757"/><stop offset="100%" stop-color="#E05C8A"/></linearGradient></defs></svg>
+                }
+                @default {
+                  <span class="prod-name-fallback">{{ j.id_producto }}</span>
+                }
+              }
+            </div>
+
+            <p class="prod-desc">{{ j.descripcion }}</p>
+
+
+          </div>
+        }
+
+        @for (_ of emptySlots; track $index) {
+          <div class="card prod-card empty-card"></div>
+        }
 
       </div>
     </div>
@@ -130,3 +124,46 @@
     </div>
   </div>
 </div>
+
+@if (selectedJuego(); as juego) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeModal()">
+        <i class="ti ti-x"></i>
+      </button>
+      <div class="modal-prod-header">
+        @switch (juego.id_producto) {
+          @case ('NexaTeg') {
+            <svg width="210" height="32" viewBox="0 0 130 32" fill="none"><circle cx="13" cy="13" r="10" fill="none" stroke="url(#mnt1)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/><path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#mnt1)"/><path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#mnt1)"/><path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#mnt1)"/><path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#mnt1)"/><line x1="16.5" y1="9.5" x2="18.5" y2="7.5" stroke="url(#mnt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="9.5" y1="9.5" x2="7.5" y2="7.5" stroke="url(#mnt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="16.5" y1="16.5" x2="18.5" y2="18.5" stroke="url(#mnt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><line x1="9.5" y1="16.5" x2="7.5" y2="18.5" stroke="url(#mnt1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/><circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#mnt1)" stroke-width="0.8" opacity="0.35"/><circle cx="13" cy="13" r="2.2" fill="url(#mnt1)"/><text x="33" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Teg</tspan></text><defs><linearGradient id="mnt1" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FF4757"/><stop offset="100%" stop-color="#E05C8A"/></linearGradient></defs></svg>
+          }
+          @default {
+            <span class="prod-name-fallback">{{ juego.id_producto }}</span>
+          }
+        }
+      </div>
+      <p class="modal-desc">{{ juego.descripcion }}</p>
+      <div class="sub-notice">
+        <i class="ti ti-lock"></i>
+        <span>Este juego requiere suscripción para acceder.</span>
+      </div>
+      @if (isSubscribed(juego.id_producto)) {
+        <span class="badge-modal">
+          <i class="ti ti-check"></i>
+        </span>
+      } @else if (currentUserId()) {
+        <button class="btn-suscribir btn-full"
+                [disabled]="subscribingId() === juego.id_producto"
+                (click)="suscribirse(juego)">
+          {{ subscribingId() === juego.id_producto ? 'Registrando...' : 'Suscribirse' }}
+        </button>
+        @if (suscripcionError()) {
+          <p class="modal-error">{{ suscripcionError() }}</p>
+        }
+      } @else {
+        <p class="sub-login-hint">
+          <a routerLink="/auth">Iniciá sesión</a> para suscribirte.
+        </p>
+      }
+    </div>
+  </div>
+}

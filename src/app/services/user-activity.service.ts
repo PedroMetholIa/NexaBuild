@@ -6,6 +6,17 @@ import { Supabase } from './supabase';
 export class UserActivityService {
   private client = inject(Supabase).client;
 
+  delete(userId: string) {
+    return this.client.from('user_activity').delete().eq('user_id', userId);
+  }
+
+  updateStatus(userId: string, isOnline: boolean) {
+    return this.client
+      .from('user_activity')
+      .update({ is_online: isOnline, last_seen: new Date().toISOString() })
+      .eq('user_id', userId);
+  }
+
   upsertLogin(userId: string, email: string) {
     const now = new Date().toISOString();
     return this.client.from('user_activity').upsert(

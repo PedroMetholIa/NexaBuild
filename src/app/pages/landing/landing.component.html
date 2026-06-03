@@ -22,69 +22,50 @@
       <p class="section-lead">Software construido sobre una base probada. Cada producto se adapta a tu rubro y necesidades.</p>
       <div class="grid-3">
 
-        <a href="nexagestion_3.html" target="_blank" class="card prod-card">
-          <div class="prod-header">
-            <svg width="240" height="32" viewBox="0 0 240 32" fill="none"><rect x="0" y="3" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".9"/><rect x="14" y="3" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".35"/><rect x="0" y="17" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".35"/><rect x="14" y="17" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".9"/><circle cx="13" cy="16" r="2.5" fill="url(#pg1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#4DDEAA">Gestión</tspan></text><defs><linearGradient id="pg1" x1="0" y1="0" x2="26" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4DDEAA"/><stop offset="100%" stop-color="#00C97A"/></linearGradient></defs></svg>
-          </div>
-          <p class="prod-desc">CRM + proyectos, tareas, facturación e historial de clientes en una sola plataforma.</p>
-        </a>
+        @for (p of productosPlataforma; track p.id_producto) {
+          <div [id]="p.id_producto"
+               class="card prod-card"
+               [class.prod-card--clickable]="hasRoute(p.id_producto) || p.req_suscripcion"
+               (click)="handleCardClick(p)">
 
-        <a href="nexareservas_1.html" target="_blank" class="card prod-card">
-          <div class="prod-header">
-            <svg width="248" height="32" viewBox="0 0 248 32" fill="none"><rect x="1" y="2" width="26" height="22" rx="3" fill="none" stroke="url(#pr1)" stroke-width="1.4"/><line x1="1" y1="8" x2="27" y2="8" stroke="url(#pr1)" stroke-width="1.4"/><line x1="7" y1="0" x2="7" y2="4" stroke="url(#pr1)" stroke-width="1.8" stroke-linecap="round"/><line x1="21" y1="0" x2="21" y2="4" stroke="url(#pr1)" stroke-width="1.8" stroke-linecap="round"/><circle cx="14" cy="17" r="4.5" fill="none" stroke="url(#pr1)" stroke-width="1.2"/><line x1="14" y1="14.5" x2="14" y2="17" stroke="url(#pr1)" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="17" x2="16" y2="18.2" stroke="url(#pr1)" stroke-width="1.2" stroke-linecap="round"/><text x="40" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#F97BA0">Reservas</tspan></text><defs><linearGradient id="pr1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F97BA0"/><stop offset="100%" stop-color="#C855FC"/></linearGradient></defs></svg>
-          </div>
-          <p class="prod-desc">Panel de turnos online con recordatorios automáticos y análisis de ocupación IA.</p>
-        </a>
+            @if (p.req_suscripcion && !isSubscribed(p.id_producto)) {
+              <span class="lock-chip"><i class="ti ti-lock"></i></span>
+            }
+            @if (p.req_suscripcion && isSubscribed(p.id_producto)) {
+              <span class="check-chip"><i class="ti ti-check"></i></span>
+            }
 
-        <a href="nexainventario_1.html" target="_blank" class="card prod-card">
-          <div class="prod-header">
-            <svg width="256" height="32" viewBox="0 0 256 32" fill="none"><rect x="0" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><rect x="5" y="3" width="1.5" height="22" rx=".75" fill="url(#pi1)" opacity=".7"/><rect x="8" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><rect x="13" y="3" width="1.5" height="22" rx=".75" fill="url(#pi1)" opacity=".7"/><rect x="16.5" y="3" width="2" height="22" rx="1" fill="url(#pi1)"/><rect x="20.5" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><text x="36" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FBB830">Inventario</tspan></text><defs><linearGradient id="pi1" x1="0" y1="0" x2="24" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FBB830"/><stop offset="100%" stop-color="#F97316"/></linearGradient></defs></svg>
-          </div>
-          <p class="prod-desc">Sistema de inventario y punto de venta con predicción de stock por IA.</p>
-        </a>
+            <div class="prod-header">
+              @switch (p.id_producto) {
+                @case ('NexaGestion') {
+                  <svg width="240" height="32" viewBox="0 0 240 32" fill="none"><rect x="0" y="3" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".9"/><rect x="14" y="3" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".35"/><rect x="0" y="17" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".35"/><rect x="14" y="17" width="12" height="12" rx="2.5" fill="url(#pg1)" opacity=".9"/><circle cx="13" cy="16" r="2.5" fill="url(#pg1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#4DDEAA">Gestión</tspan></text><defs><linearGradient id="pg1" x1="0" y1="0" x2="26" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4DDEAA"/><stop offset="100%" stop-color="#00C97A"/></linearGradient></defs></svg>
+                }
+                @case ('NexaReservas') {
+                  <svg width="248" height="32" viewBox="0 0 248 32" fill="none"><rect x="1" y="2" width="26" height="22" rx="3" fill="none" stroke="url(#pr1)" stroke-width="1.4"/><line x1="1" y1="8" x2="27" y2="8" stroke="url(#pr1)" stroke-width="1.4"/><line x1="7" y1="0" x2="7" y2="4" stroke="url(#pr1)" stroke-width="1.8" stroke-linecap="round"/><line x1="21" y1="0" x2="21" y2="4" stroke="url(#pr1)" stroke-width="1.8" stroke-linecap="round"/><circle cx="14" cy="17" r="4.5" fill="none" stroke="url(#pr1)" stroke-width="1.2"/><line x1="14" y1="14.5" x2="14" y2="17" stroke="url(#pr1)" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="17" x2="16" y2="18.2" stroke="url(#pr1)" stroke-width="1.2" stroke-linecap="round"/><text x="40" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#F97BA0">Reservas</tspan></text><defs><linearGradient id="pr1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F97BA0"/><stop offset="100%" stop-color="#C855FC"/></linearGradient></defs></svg>
+                }
+                @case ('NexaInventario') {
+                  <svg width="256" height="32" viewBox="0 0 256 32" fill="none"><rect x="0" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><rect x="5" y="3" width="1.5" height="22" rx=".75" fill="url(#pi1)" opacity=".7"/><rect x="8" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><rect x="13" y="3" width="1.5" height="22" rx=".75" fill="url(#pi1)" opacity=".7"/><rect x="16.5" y="3" width="2" height="22" rx="1" fill="url(#pi1)"/><rect x="20.5" y="3" width="3" height="22" rx="1.5" fill="url(#pi1)"/><text x="36" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FBB830">Inventario</tspan></text><defs><linearGradient id="pi1" x1="0" y1="0" x2="24" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FBB830"/><stop offset="100%" stop-color="#F97316"/></linearGradient></defs></svg>
+                }
+                @case ('NexaRRHH') {
+                  <svg width="210" height="32" viewBox="0 0 210 32" fill="none"><circle cx="9" cy="7" r="5" fill="none" stroke="url(#ph1)" stroke-width="1.4"/><path d="M1 26c0-4.418 3.582-8 8-8h1" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="18" x2="26" y2="18" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round"/><path d="M22 14 L26 18 L22 22" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="18" r="2" fill="url(#ph1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#2DD4CC">RRHH</tspan></text><defs><linearGradient id="ph1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2DD4CC"/><stop offset="100%" stop-color="#06B6D4"/></linearGradient></defs></svg>
+                }
+                @case ('NexaMetricas') {
+                  <svg width="248" height="32" viewBox="0 0 248 32" fill="none"><rect x="0" y="18" width="5" height="13" rx="1.5" fill="url(#pm1)"/><rect x="7" y="12" width="5" height="19" rx="1.5" fill="url(#pm1)" opacity=".8"/><rect x="14" y="6" width="5" height="25" rx="1.5" fill="url(#pm1)" opacity=".9"/><rect x="21" y="14" width="5" height="17" rx="1.5" fill="url(#pm1)" opacity=".7"/><circle cx="23" cy="6" r="3.5" fill="none" stroke="url(#pm1)" stroke-width="1.3"/><circle cx="23" cy="6" r="1.3" fill="url(#pm1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#7B93FA">Métricas</tspan></text><defs><linearGradient id="pm1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B93FA"/><stop offset="100%" stop-color="#818CF8"/></linearGradient></defs></svg>
+                }
+                @case ('NexaJuegos') {
+                  <svg width="232" height="32" viewBox="0 0 232 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="8" width="26" height="14" rx="4.5" fill="none" stroke="url(#pj1)" stroke-width="1.4"/><path d="M3 8.5 Q4.5 4 9 4 L13 4" stroke="url(#pj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 8.5 Q23.5 4 19 4 L15 4" stroke="url(#pj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/><rect x="4.5" y="13.6" width="6" height="1.8" rx=".9" fill="url(#pj1)"/><rect x="6.6" y="11.5" width="1.8" height="6" rx=".9" fill="url(#pj1)"/><circle cx="20.5" cy="13" r="1.5" fill="url(#pj1)"/><circle cx="23" cy="15.5" r="1.5" fill="url(#pj1)" opacity=".5"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Juegos</tspan></text><defs><linearGradient id="pj1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F87171"/><stop offset="100%" stop-color="#E05C8A"/></linearGradient></defs></svg>
+                }
+                @default {
+                  <span class="prod-name-fallback">{{ p.id_producto }}</span>
+                }
+              }
+            </div>
 
-        <a href="nexarrhh_6.html" target="_blank" class="card prod-card">
-          <div class="prod-header">
-            <svg width="210" height="32" viewBox="0 0 210 32" fill="none"><circle cx="9" cy="7" r="5" fill="none" stroke="url(#ph1)" stroke-width="1.4"/><path d="M1 26c0-4.418 3.582-8 8-8h1" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="18" x2="26" y2="18" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round"/><path d="M22 14 L26 18 L22 22" stroke="url(#ph1)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="18" r="2" fill="url(#ph1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#2DD4CC">RRHH</tspan></text><defs><linearGradient id="ph1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2DD4CC"/><stop offset="100%" stop-color="#06B6D4"/></linearGradient></defs></svg>
-          </div>
-          <p class="prod-desc">Portal de onboarding de empleados y clientes SaaS con flujos IA adaptativos.</p>
-        </a>
+            <p class="prod-desc">{{ p.descripcion }}</p>
 
-        <a href="nexametricas_1.html" target="_blank" class="card prod-card">
-          <div class="prod-header">
-            <svg width="248" height="32" viewBox="0 0 248 32" fill="none"><rect x="0" y="18" width="5" height="13" rx="1.5" fill="url(#pm1)"/><rect x="7" y="12" width="5" height="19" rx="1.5" fill="url(#pm1)" opacity=".8"/><rect x="14" y="6" width="5" height="25" rx="1.5" fill="url(#pm1)" opacity=".9"/><rect x="21" y="14" width="5" height="17" rx="1.5" fill="url(#pm1)" opacity=".7"/><circle cx="23" cy="6" r="3.5" fill="none" stroke="url(#pm1)" stroke-width="1.3"/><circle cx="23" cy="6" r="1.3" fill="url(#pm1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#7B93FA">Métricas</tspan></text><defs><linearGradient id="pm1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B93FA"/><stop offset="100%" stop-color="#818CF8"/></linearGradient></defs></svg>
-          </div>
-          <p class="prod-desc">Dashboard de métricas de negocio con análisis IA y alertas en lenguaje natural.</p>
-        </a>
 
-        <a routerLink="/nexajuegos" class="card prod-card">
-          <div class="prod-header">
-            <svg width="232" height="32" viewBox="0 0 232 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Cuerpo del gamepad -->
-              <rect x="1" y="8" width="26" height="14" rx="4.5" fill="none" stroke="url(#pj1)" stroke-width="1.4"/>
-              <!-- Shoulder izquierdo -->
-              <path d="M3 8.5 Q4.5 4 9 4 L13 4" stroke="url(#pj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-              <!-- Shoulder derecho -->
-              <path d="M25 8.5 Q23.5 4 19 4 L15 4" stroke="url(#pj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-              <!-- D-pad horizontal -->
-              <rect x="4.5" y="13.6" width="6" height="1.8" rx=".9" fill="url(#pj1)"/>
-              <!-- D-pad vertical -->
-              <rect x="6.6" y="11.5" width="1.8" height="6" rx=".9" fill="url(#pj1)"/>
-              <!-- Botón círculo -->
-              <circle cx="20.5" cy="13" r="1.5" fill="url(#pj1)"/>
-              <!-- Botón cuadrado -->
-              <circle cx="23" cy="15.5" r="1.5" fill="url(#pj1)" opacity=".5"/>
-              <text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Juegos</tspan></text>
-              <defs>
-                <linearGradient id="pj1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#F87171"/>
-                  <stop offset="100%" stop-color="#E05C8A"/>
-                </linearGradient>
-              </defs>
-            </svg>
           </div>
-          <p class="prod-desc">Plataforma para desarrollar y publicar  videojuegos indie con analítica IA de jugadores en tiempo real.</p>
-        </a>
+        }
 
       </div>
     </div>
@@ -133,3 +114,61 @@
     </div>
   </div>
 </div>
+
+@if (selectedProducto(); as prod) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeModal()">
+        <i class="ti ti-x"></i>
+      </button>
+      <div class="modal-prod-header">
+        @switch (prod.id_producto) {
+          @case ('NexaGestion') {
+            <svg width="240" height="32" viewBox="0 0 158 32" fill="none"><rect x="0" y="3" width="12" height="12" rx="2.5" fill="url(#mpg1)" opacity=".9"/><rect x="14" y="3" width="12" height="12" rx="2.5" fill="url(#mpg1)" opacity=".35"/><rect x="0" y="17" width="12" height="12" rx="2.5" fill="url(#mpg1)" opacity=".35"/><rect x="14" y="17" width="12" height="12" rx="2.5" fill="url(#mpg1)" opacity=".9"/><circle cx="13" cy="16" r="2.5" fill="url(#mpg1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#4DDEAA">Gestión</tspan></text><defs><linearGradient id="mpg1" x1="0" y1="0" x2="26" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4DDEAA"/><stop offset="100%" stop-color="#00C97A"/></linearGradient></defs></svg>
+          }
+          @case ('NexaReservas') {
+            <svg width="248" height="32" viewBox="0 0 163 32" fill="none"><rect x="1" y="2" width="26" height="22" rx="3" fill="none" stroke="url(#mpr1)" stroke-width="1.4"/><line x1="1" y1="8" x2="27" y2="8" stroke="url(#mpr1)" stroke-width="1.4"/><line x1="7" y1="0" x2="7" y2="4" stroke="url(#mpr1)" stroke-width="1.8" stroke-linecap="round"/><line x1="21" y1="0" x2="21" y2="4" stroke="url(#mpr1)" stroke-width="1.8" stroke-linecap="round"/><circle cx="14" cy="17" r="4.5" fill="none" stroke="url(#mpr1)" stroke-width="1.2"/><line x1="14" y1="14.5" x2="14" y2="17" stroke="url(#mpr1)" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="17" x2="16" y2="18.2" stroke="url(#mpr1)" stroke-width="1.2" stroke-linecap="round"/><text x="40" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#F97BA0">Reservas</tspan></text><defs><linearGradient id="mpr1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F97BA0"/><stop offset="100%" stop-color="#C855FC"/></linearGradient></defs></svg>
+          }
+          @case ('NexaInventario') {
+            <svg width="256" height="32" viewBox="0 0 175 32" fill="none"><rect x="0" y="3" width="3" height="22" rx="1.5" fill="url(#mpi1)"/><rect x="5" y="3" width="1.5" height="22" rx=".75" fill="url(#mpi1)" opacity=".7"/><rect x="8" y="3" width="3" height="22" rx="1.5" fill="url(#mpi1)"/><rect x="13" y="3" width="1.5" height="22" rx=".75" fill="url(#mpi1)" opacity=".7"/><rect x="16.5" y="3" width="2" height="22" rx="1" fill="url(#mpi1)"/><rect x="20.5" y="3" width="3" height="22" rx="1.5" fill="url(#mpi1)"/><text x="36" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FBB830">Inventario</tspan></text><defs><linearGradient id="mpi1" x1="0" y1="0" x2="24" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FBB830"/><stop offset="100%" stop-color="#F97316"/></linearGradient></defs></svg>
+          }
+          @case ('NexaRRHH') {
+            <svg width="210" height="32" viewBox="0 0 128 32" fill="none"><circle cx="9" cy="7" r="5" fill="none" stroke="url(#mph1)" stroke-width="1.4"/><path d="M1 26c0-4.418 3.582-8 8-8h1" stroke="url(#mph1)" stroke-width="1.4" stroke-linecap="round"/><line x1="14" y1="18" x2="26" y2="18" stroke="url(#mph1)" stroke-width="1.4" stroke-linecap="round"/><path d="M22 14 L26 18 L22 22" stroke="url(#mph1)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="18" r="2" fill="url(#mph1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#2DD4CC">RRHH</tspan></text><defs><linearGradient id="mph1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2DD4CC"/><stop offset="100%" stop-color="#06B6D4"/></linearGradient></defs></svg>
+          }
+          @case ('NexaMetricas') {
+            <svg width="248" height="32" viewBox="0 0 168 32" fill="none"><rect x="0" y="18" width="5" height="13" rx="1.5" fill="url(#mpm1)"/><rect x="7" y="12" width="5" height="19" rx="1.5" fill="url(#mpm1)" opacity=".8"/><rect x="14" y="6" width="5" height="25" rx="1.5" fill="url(#mpm1)" opacity=".9"/><rect x="21" y="14" width="5" height="17" rx="1.5" fill="url(#mpm1)" opacity=".7"/><circle cx="23" cy="6" r="3.5" fill="none" stroke="url(#mpm1)" stroke-width="1.3"/><circle cx="23" cy="6" r="1.3" fill="url(#mpm1)"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#7B93FA">Métricas</tspan></text><defs><linearGradient id="mpm1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B93FA"/><stop offset="100%" stop-color="#818CF8"/></linearGradient></defs></svg>
+          }
+          @case ('NexaJuegos') {
+            <svg width="232" height="32" viewBox="0 0 152 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="8" width="26" height="14" rx="4.5" fill="none" stroke="url(#mpj1)" stroke-width="1.4"/><path d="M3 8.5 Q4.5 4 9 4 L13 4" stroke="url(#mpj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 8.5 Q23.5 4 19 4 L15 4" stroke="url(#mpj1)" stroke-width="1.4" stroke-linecap="round" fill="none"/><rect x="4.5" y="13.6" width="6" height="1.8" rx=".9" fill="url(#mpj1)"/><rect x="6.6" y="11.5" width="1.8" height="6" rx=".9" fill="url(#mpj1)"/><circle cx="20.5" cy="13" r="1.5" fill="url(#mpj1)"/><circle cx="23" cy="15.5" r="1.5" fill="url(#mpj1)" opacity=".5"/><text x="38" y="22" font-family="Outfit,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">Nexa<tspan fill="#FF4757">Juegos</tspan></text><defs><linearGradient id="mpj1" x1="0" y1="0" x2="28" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F87171"/><stop offset="100%" stop-color="#E05C8A"/></linearGradient></defs></svg>
+          }
+          @default {
+            <span class="prod-name-fallback">{{ prod.id_producto }}</span>
+          }
+        }
+      </div>
+      <p class="modal-desc">{{ prod.descripcion }}</p>
+      <div class="sub-notice">
+        <i class="ti ti-lock"></i>
+        <span>Este producto requiere suscripción para acceder.</span>
+      </div>
+      @if (isSubscribed(prod.id_producto)) {
+        <span class="badge-modal">
+          <i class="ti ti-check"></i>
+        </span>
+      } @else if (currentUserId()) {
+        <button class="btn-suscribir btn-full"
+                [disabled]="subscribingId() === prod.id_producto"
+                (click)="suscribirse(prod)">
+          {{ subscribingId() === prod.id_producto ? 'Registrando...' : 'Suscribirse' }}
+        </button>
+        @if (suscripcionError()) {
+          <p class="modal-error">{{ suscripcionError() }}</p>
+        }
+      } @else {
+        <p class="sub-login-hint">
+          <a routerLink="/auth">Iniciá sesión</a> para suscribirte.
+        </p>
+      }
+    </div>
+  </div>
+}

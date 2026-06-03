@@ -1,74 +1,367 @@
 <div class="page">
-  <div class="page-header">
-    <div>
-      <span class="section-tag">Administración</span>
-      <h1>Usuarios activos</h1>
-      <p class="subtitle">Sesiones registradas y su estado en tiempo real</p>
-    </div>
-    <div class="stats">
-      <div class="stat-badge online">
-        <span class="dot"></span>
-        {{ onlineCount }} en línea
+
+  <!-- ── Tabs ── -->
+  <div class="tabs-bar">
+    <button class="tab-btn" [class.active]="activeTab()==='usuarios'"      (click)="setTab('usuarios')">
+      <i class="ti ti-users"></i> Usuarios
+    </button>
+    <button class="tab-btn" [class.active]="activeTab()==='sesiones'"      (click)="setTab('sesiones')">
+      <i class="ti ti-activity"></i> Sesiones
+    </button>
+    <button class="tab-btn" [class.active]="activeTab()==='productos'"     (click)="setTab('productos')">
+      <i class="ti ti-box"></i> Productos
+    </button>
+    <button class="tab-btn" [class.active]="activeTab()==='suscripciones'" (click)="setTab('suscripciones')">
+      <i class="ti ti-credit-card"></i> Suscripciones
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN: USUARIOS
+  ══════════════════════════════════════════ -->
+  @if (activeTab() === 'usuarios') {
+    <div class="section-header">
+      <div>
+        <span class="section-tag">ABM</span>
+        <h1>Usuarios</h1>
+        <p class="subtitle">Gestión de perfiles de usuario</p>
       </div>
-      <div class="stat-badge total">
-        {{ users().length }} total
+      <button class="btn-add" (click)="openAdd()"><i class="ti ti-plus"></i> Agregar</button>
+    </div>
+
+    @if (loading()) {
+      <div class="empty">Cargando...</div>
+    } @else if (usuarios().length === 0) {
+      <div class="empty">No hay usuarios registrados.</div>
+    } @else {
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th>Nombre</th><th>Email</th><th>Admin</th><th></th>
+          </tr></thead>
+          <tbody>
+            @for (u of usuarios(); track u.id) {
+              <tr>
+                <td><div class="user-cell">
+                  <div class="avatar">{{ u.nombre[0].toUpperCase() }}</div>
+                  <span class="user-name">{{ u.nombre }} {{ u.apellido }}</span>
+                </div></td>
+                <td class="text-muted">{{ u.email }}</td>
+                <td>
+                  <span class="badge" [class.badge-admin]="u.administrador" [class.badge-user]="!u.administrador">
+                    {{ u.administrador ? 'Admin' : 'Usuario' }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button class="btn-icon btn-edit" (click)="openEdit(u)" title="Editar"><i class="ti ti-pencil"></i></button>
+                  <button class="btn-icon btn-delete" (click)="askDelete('usuarios', u.id, u.nombre+' '+u.apellido)" title="Eliminar"><i class="ti ti-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN: SESIONES
+  ══════════════════════════════════════════ -->
+  @if (activeTab() === 'sesiones') {
+    <div class="section-header">
+      <div>
+        <span class="section-tag">ABM</span>
+        <h1>Sesiones</h1>
+        <p class="subtitle">Actividad de usuarios en tiempo real</p>
+      </div>
+      <div class="header-stats">
+        <span class="stat-badge online"><span class="dot"></span>{{ onlineCount }} en línea</span>
+        <span class="stat-badge total">{{ sesiones().length }} total</span>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="empty">Cargando...</div>
+    } @else if (sesiones().length === 0) {
+      <div class="empty">No hay registros de actividad aún.</div>
+    } @else {
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th>Usuario</th><th>Último login</th><th>Última actividad</th><th>Estado</th><th></th>
+          </tr></thead>
+          <tbody>
+            @for (s of sesiones(); track s.user_id) {
+              <tr>
+                <td><div class="user-cell">
+                  <div class="avatar">{{ (s.usuario?.nombre ?? s.email)[0].toUpperCase() }}</div>
+                  <div class="user-info">
+                    @if (s.usuario) { <span class="user-name">{{ s.usuario.nombre }} {{ s.usuario.apellido }}</span> }
+                    <span class="text-muted small">{{ s.email }}</span>
+                  </div>
+                </div></td>
+                <td>{{ s.last_login | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ s.last_seen | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td><span class="badge" [class.badge-online]="s.is_online" [class.badge-offline]="!s.is_online">
+                  {{ s.is_online ? 'En línea' : 'Desconectado' }}
+                </span></td>
+                <td class="actions">
+                  <button class="btn-icon btn-edit" (click)="openEdit(s)" title="Editar estado"><i class="ti ti-pencil"></i></button>
+                  @if (s.is_online && s.user_id !== currentUserId()) {
+                    <button class="btn-logout" [disabled]="closing() === s.user_id" (click)="forceLogout(s.user_id)">
+                      {{ closing() === s.user_id ? 'Cerrando...' : 'Forzar cierre' }}
+                    </button>
+                  }
+                  <button class="btn-icon btn-delete" (click)="askDelete('sesiones', s.user_id, s.email)" title="Eliminar"><i class="ti ti-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN: PRODUCTOS
+  ══════════════════════════════════════════ -->
+  @if (activeTab() === 'productos') {
+    <div class="section-header">
+      <div>
+        <span class="section-tag">ABM</span>
+        <h1>Productos</h1>
+        <p class="subtitle">Catálogo de productos y servicios</p>
+      </div>
+      <button class="btn-add" (click)="openAdd()"><i class="ti ti-plus"></i> Agregar</button>
+    </div>
+
+    @if (loading()) {
+      <div class="empty">Cargando...</div>
+    } @else if (productos().length === 0) {
+      <div class="empty">No hay productos cargados.</div>
+    } @else {
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th>ID Producto</th><th>Descripción</th><th>Req. Suscripción</th><th></th>
+          </tr></thead>
+          <tbody>
+            @for (p of productos(); track p.id_producto) {
+              <tr>
+                <td><code class="code-id">{{ p.id_producto }}</code></td>
+                <td>{{ p.descripcion }}</td>
+                <td><span class="badge" [class.badge-admin]="p.req_suscripcion" [class.badge-user]="!p.req_suscripcion">
+                  {{ p.req_suscripcion ? 'Sí' : 'No' }}
+                </span></td>
+                <td class="actions">
+                  <button class="btn-icon btn-edit" (click)="openEdit(p)" title="Editar"><i class="ti ti-pencil"></i></button>
+                  <button class="btn-icon btn-delete" (click)="askDelete('productos', p.id_producto, p.descripcion)" title="Eliminar"><i class="ti ti-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN: SUSCRIPCIONES
+  ══════════════════════════════════════════ -->
+  @if (activeTab() === 'suscripciones') {
+    <div class="section-header">
+      <div>
+        <span class="section-tag">ABM</span>
+        <h1>Suscripciones</h1>
+        <p class="subtitle">Asignación de productos a usuarios</p>
+      </div>
+      <button class="btn-add" (click)="openAdd()"><i class="ti ti-plus"></i> Agregar</button>
+    </div>
+
+    @if (loading()) {
+      <div class="empty">Cargando...</div>
+    } @else if (suscripciones().length === 0) {
+      <div class="empty">No hay suscripciones registradas.</div>
+    } @else {
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th>Usuario</th><th>Producto</th><th>Ingreso</th><th>Vencimiento</th><th>URL</th><th></th>
+          </tr></thead>
+          <tbody>
+            @for (s of suscripciones(); track s.id) {
+              <tr>
+                <td>
+                  @if (s.usuario) {
+                    <span class="user-name">{{ s.usuario.nombre }} {{ s.usuario.apellido }}</span>
+                    <div class="text-muted small">{{ s.usuario.email }}</div>
+                  } @else { <span class="text-muted">{{ s.id_usuario }}</span> }
+                </td>
+                <td>
+                  @if (s.producto) { {{ s.producto.descripcion }} }
+                  @else { <code class="code-id">{{ s.id_producto }}</code> }
+                </td>
+                <td>{{ s.fecha_ing_sus | date:'dd/MM/yyyy' }}</td>
+                <td>{{ s.fecha_fin_sus ? (s.fecha_fin_sus | date:'dd/MM/yyyy') : '—' }}</td>
+                <td>
+                  @if (s.url) { <a class="link" [href]="s.url" target="_blank">Ver</a> }
+                  @else { <span class="text-muted">—</span> }
+                </td>
+                <td class="actions">
+                  <button class="btn-icon btn-edit" (click)="openEdit(s)" title="Editar"><i class="ti ti-pencil"></i></button>
+                  <button class="btn-icon btn-delete" (click)="askDelete('suscripciones', s.id, (s.usuario?.nombre ?? s.id_usuario))" title="Eliminar"><i class="ti ti-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL ABM
+══════════════════════════════════════════ -->
+@if (modalOpen()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ modalTitle() }}</h3>
+        <button class="modal-close" (click)="closeModal()"><i class="ti ti-x"></i></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Formulario Usuarios -->
+        @if (modalSection() === 'usuarios') {
+          @if (modalMode() === 'add') {
+            <div class="form-group">
+              <label class="form-label">ID (UUID de Supabase Auth) *</label>
+              <input class="form-input" [(ngModel)]="usuarioForm.id" name="uid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email *</label>
+              <input class="form-input" type="email" [(ngModel)]="usuarioForm.email" name="email" placeholder="usuario@ejemplo.com" />
+            </div>
+          }
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre *</label>
+              <input class="form-input" [(ngModel)]="usuarioForm.nombre" name="nombre" placeholder="Nombre" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Apellido *</label>
+              <input class="form-input" [(ngModel)]="usuarioForm.apellido" name="apellido" placeholder="Apellido" />
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" [(ngModel)]="usuarioForm.administrador" name="administrador" id="chk-admin" />
+            <label for="chk-admin">Es administrador</label>
+          </div>
+        }
+
+        <!-- Formulario Sesiones (solo edición de estado) -->
+        @if (modalSection() === 'sesiones') {
+          <p class="form-hint">Solo se puede modificar el estado de la sesión.</p>
+          <div class="form-check">
+            <input type="checkbox" [(ngModel)]="sesionForm.is_online" name="is_online" id="chk-online" />
+            <label for="chk-online">En línea</label>
+          </div>
+        }
+
+        <!-- Formulario Productos -->
+        @if (modalSection() === 'productos') {
+          <div class="form-group">
+            <label class="form-label">ID Producto *</label>
+            <input class="form-input" [(ngModel)]="productoForm.id_producto" name="id_producto"
+                   placeholder="ej: NEXABUILD-PRO" [disabled]="modalMode() === 'edit'" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Descripción *</label>
+            <input class="form-input" [(ngModel)]="productoForm.descripcion" name="descripcion" placeholder="Descripción del producto" />
+          </div>
+          <div class="form-check">
+            <input type="checkbox" [(ngModel)]="productoForm.req_suscripcion" name="req_suscripcion" id="chk-req" />
+            <label for="chk-req">Requiere suscripción</label>
+          </div>
+        }
+
+        <!-- Formulario Suscripciones -->
+        @if (modalSection() === 'suscripciones') {
+          <div class="form-group">
+            <label class="form-label">Usuario *</label>
+            <select class="form-select" [(ngModel)]="suscripcionForm.id_usuario" name="id_usuario">
+              <option value="">-- Seleccioná un usuario --</option>
+              @for (u of usuarios(); track u.id) {
+                <option [value]="u.id">{{ u.nombre }} {{ u.apellido }} ({{ u.email }})</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Producto *</label>
+            <select class="form-select" [(ngModel)]="suscripcionForm.id_producto" name="id_producto">
+              <option value="">-- Seleccioná un producto --</option>
+              @for (p of productos(); track p.id_producto) {
+                <option [value]="p.id_producto">{{ p.id_producto }} – {{ p.descripcion }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Fecha ingreso *</label>
+              <input class="form-input" type="date" [(ngModel)]="suscripcionForm.fecha_ing_sus" name="fecha_ing" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha vencimiento</label>
+              <input class="form-input" type="date" [(ngModel)]="suscripcionForm.fecha_fin_sus" name="fecha_fin" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL</label>
+            <input class="form-input" type="url" [(ngModel)]="suscripcionForm.url" name="url" placeholder="https://..." />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">User Admin</label>
+              <input class="form-input" [(ngModel)]="suscripcionForm.user_admin" name="user_admin" placeholder="Usuario" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">User Key</label>
+              <input class="form-input" [(ngModel)]="suscripcionForm.user_key" name="user_key" placeholder="Contraseña / clave" />
+            </div>
+          </div>
+        }
+
+        @if (modalError()) {
+          <p class="form-error">{{ modalError() }}</p>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+        <button class="btn-save" (click)="save()" [disabled]="modalSaving()">
+          {{ modalSaving() ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
     </div>
   </div>
+}
 
-  @if (loading()) {
-    <div class="empty">Cargando...</div>
-  } @else if (users().length === 0) {
-    <div class="empty">No hay registros de actividad aún.</div>
-  } @else {
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Último login</th>
-            <th>Última actividad</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.user_id) {
-            <tr>
-              <td>
-                <div class="user-cell">
-                  <div class="avatar">
-                    {{ (user.usuario?.nombre ?? user.email)[0].toUpperCase() }}
-                  </div>
-                  <div class="user-info">
-                    @if (user.usuario) {
-                      <span class="user-name">{{ user.usuario.nombre }} {{ user.usuario.apellido }}</span>
-                    }
-                    <span class="user-email">{{ user.email }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>{{ user.last_login | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ user.last_seen | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>
-                <span class="badge" [class.badge-online]="user.is_online" [class.badge-offline]="!user.is_online">
-                  {{ user.is_online ? 'En línea' : 'Desconectado' }}
-                </span>
-              </td>
-              <td>
-                @if (user.is_online && user.user_id !== currentUserId()) {
-                  <button
-                    class="btn-force-logout"
-                    [disabled]="closing() === user.user_id"
-                    (click)="forceLogout(user.user_id)">
-                    {{ closing() === user.user_id ? 'Cerrando...' : 'Forzar cierre' }}
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+<!-- ══════════════════════════════════════════
+     CONFIRMACIÓN DE ELIMINACIÓN
+══════════════════════════════════════════ -->
+@if (deleteConfirm()) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <div class="modal-card confirm-card" (click)="$event.stopPropagation()">
+      <div class="confirm-icon"><i class="ti ti-alert-triangle"></i></div>
+      <h3>¿Eliminar registro?</h3>
+      <p>Se eliminará <strong>{{ deleteConfirm()!.label }}</strong>. Esta acción no se puede deshacer.</p>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn-danger" (click)="confirmDelete()">Eliminar</button>
+      </div>
     </div>
-  }
-</div>
+  </div>
+}

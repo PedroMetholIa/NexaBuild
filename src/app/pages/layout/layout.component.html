@@ -1,6 +1,6 @@
 <nav>
   <div class="container nav-container">
-    <a href="/" class="logo">
+    <a routerLink="/" class="logo">
       <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
         <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
           fill="rgba(0,212,200,0.08)" stroke="url(#snb)" stroke-width="2.2" stroke-linejoin="round"/>
@@ -16,8 +16,20 @@
     </a>
     <div class="nav-actions">
       @if (isLoggedIn()) {
-        <span class="nav-user-name">{{ userName() }}</span>
-        <button class="nav-btn nav-logout" (click)="logout()">Cerrar sesión</button>
+        <div class="nav-user-area" (click)="$event.stopPropagation()">
+          <span class="nav-user-name">¡Hola {{ userName() }}!</span>
+          <button class="nav-dropdown-trigger" (click)="toggleMenu()">
+            <i class="ti ti-chevron-down" [class.nav-chevron-open]="menuOpen()"></i>
+          </button>
+          @if (menuOpen()) {
+            <div class="nav-dropdown-panel">
+              <button class="nav-dropdown-item" (click)="logout()">
+                <i class="ti ti-logout"></i> Cerrar sesión
+              </button>
+            </div>
+          }
+        </div>
+        <button class="nav-btn nav-logout nav-logout-desktop" (click)="logout()">Cerrar sesión</button>
       } @else {
         <a class="nav-login" (click)="openModal(false)">Iniciar sesión</a>
         <a class="nav-btn" (click)="openModal(true)">Crear cuenta</a>
@@ -33,7 +45,7 @@
 <footer>
   <div class="footer-inner">
     <p>© 2026 NexaBuild — Montevideo, Uruguay</p>
-    <a href="/" class="logo">
+    <a routerLink="/" class="logo">
       <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
         <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
           fill="rgba(0,212,200,0.08)" stroke="url(#snbf)" stroke-width="2.2" stroke-linejoin="round"/>

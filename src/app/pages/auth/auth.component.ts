@@ -89,16 +89,15 @@ export class AuthComponent implements OnInit {
         const { data, error } = await this.auth.signIn(email, password);
         if (error) throw error;
         userId = data.user!.id;
-        const { error: errActivity } = await this.userActivity.upsertLogin(userId, email);
-        if (errActivity) throw errActivity;
+        await this.userActivity.upsertLogin(userId, email);
       } else {
-        const { data, error } = await this.auth.signUp(email, password);
+        const { data, error } = await this.auth.signUp(email, password, { nombre: nombre.trim(), apellido: apellido.trim() });
         if (error) throw error;
-        userId = data.user!.id;
+        if (!data.user) throw new Error('No se pudo crear la cuenta. Revisá tu email para confirmación.');
+        userId = data.user.id;
         const { error: errUsuario } = await this.usuarioService.create(userId, email, nombre.trim(), apellido.trim());
         if (errUsuario) throw errUsuario;
-        const { error: errActivity } = await this.userActivity.upsertLogin(userId, email);
-        if (errActivity) throw errActivity;
+        await this.userActivity.upsertLogin(userId, email);
       }
 
       const { data: perfil } = await this.usuarioService.getByUserId(userId);
