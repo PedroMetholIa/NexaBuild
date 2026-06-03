@@ -28,15 +28,19 @@ export class LayoutComponent implements OnInit {
     const { data: sessionData } = await this.auth.getSession();
     if (sessionData.session) {
       await this.loadUser(sessionData.session.user.id, sessionData.session.user.user_metadata);
+    } else {
+      // Sesión expirada o inválida — limpiar estado cacheado
+      this.isLoggedIn.set(false);
+      this.userName.set('');
+      sessionStorage.removeItem('nx_user_name');
+      sessionStorage.removeItem('nx_user_admin');
     }
 
     this.auth.onAuthChange(async (event, session) => {
-      if (session && event === 'SIGNED_IN') {
+      if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION')) {
         await this.loadUser(session.user.id, session.user.user_metadata);
-        this.modalOpen.set(false);
-      } else if (session && event === 'TOKEN_REFRESHED') {
-        await this.loadUser(session.user.id, session.user.user_metadata);
-      } else if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_IN') this.modalOpen.set(false);
+      } else if (!session) {
         this.isLoggedIn.set(false);
         this.userName.set('');
       }
@@ -84,6 +88,10 @@ export class LayoutComponent implements OnInit {
   }
 
   async logout() {
+    // Actualizar header inmediatamente, sin esperar eventos async
+    this.isLoggedIn.set(false);
+    this.userName.set('');
+    this.menuOpen.set(false);
     try {
       const { data } = await this.auth.getSession();
       if (data.session?.user) {

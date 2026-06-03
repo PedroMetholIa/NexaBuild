@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { SuscripcionService } from '../../services/suscripcion.service';
@@ -12,14 +12,16 @@ import { Producto } from '../../models/producto';
   styleUrl: './landing.component.css',
 })
 export class LandingComponent implements OnInit {
+  // inject() como field initializer — se resuelve antes que los campos dependientes
+  private readonly userState = inject(UserStateService);
+
+  readonly currentUserId     = this.userState.userId;
+  readonly misSubscripciones = this.userState.misSubscripciones;
+
   submitted        = signal(false);
   subscribingId    = signal<string | null>(null);
   selectedProducto = signal<Producto | null>(null);
   suscripcionError = signal('');
-
-  // Signals compartidos — persisten entre navegaciones
-  readonly currentUserId     = this.userState.userId;
-  readonly misSubscripciones = this.userState.misSubscripciones;
 
   private readonly GAME_PRODUCT_IDS = ['NexaTeg'];
 
@@ -35,7 +37,6 @@ export class LandingComponent implements OnInit {
     private router: Router,
     private productoSvc: ProductoService,
     private suscripcionSvc: SuscripcionService,
-    private userState: UserStateService,
   ) {}
 
   async ngOnInit() {
