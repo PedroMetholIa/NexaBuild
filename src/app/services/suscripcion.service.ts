@@ -25,6 +25,14 @@ export class SuscripcionService {
     return this.client.from('suscripcion').select('id_producto').eq('id_usuario', userId);
   }
 
+  getByProducto(idProducto: string) {
+    return this.client
+      .from('suscripcion')
+      .select('*, usuario(nombre, apellido, email)')
+      .eq('id_producto', idProducto)
+      .order('fecha_ing_sus', { ascending: false });
+  }
+
   delete(id: string) {
     return this.client.from('suscripcion').delete().eq('id', id);
   }

@@ -1,56 +1,147 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { PartidaService } from '../../services/partida.service';
+import { SuscripcionService } from '../../services/suscripcion.service';
+import { UserStateService } from '../../services/user-state.service';
 import { UserActivityService } from '../../services/user-activity.service';
-import { AuthService } from '../../services/auth.service';
-import { UserActivity } from '../../models/user-activity';
+import { Partida } from '../../models/partida';
+import { Suscripcion } from '../../models/suscripcion';
 
 @Component({
   selector: 'app-nexateg',
-  imports: [DatePipe],
+  imports: [FormsModule, DatePipe],
   templateUrl: './nexateg.component.html',
   styleUrl: './nexateg.component.css',
 })
 export class NexaTegComponent implements OnInit, OnDestroy {
-  users = signal<UserActivity[]>([]);
-  loading = signal(true);
-  currentUserId = signal<string | null>(null);
-  closing = signal<string | null>(null);
+  partidas       = signal<Partida[]>([]);
+  suscriptores   = signal<Suscripcion[]>([]);
+  onlineUserIds  = signal<Set<string>>(new Set());
+  loading        = signal(true);
+  loadingSubs    = signal(false);
+  saving        = signal(false);
+  showForm      = signal(false);
+  deletingId    = signal<number | null>(null);
+  togglingId    = signal<number | null>(null);
+  error         = signal('');
+  showClave     = signal(false);
+
+  private readonly userState      = inject(UserStateService);
+  private readonly suscripcionSvc = inject(SuscripcionService);
+  private readonly activitySvc    = inject(UserActivityService);
+
+  form = {
+    idProducto:      'NexaTeg',
+    NombrePartida:   '',
+    ClavePartida:    '',
+    LimiteJugadores: 2,
+    PartidaActiva:   false,
+  };
 
   private refreshInterval?: ReturnType<typeof setInterval>;
 
-  constructor(
-    private userActivity: UserActivityService,
-    private auth: AuthService
-  ) {}
+  constructor(private partidaSvc: PartidaService) {}
 
   async ngOnInit() {
-    const { data } = await this.auth.getSession();
-    this.currentUserId.set(data.session?.user.id ?? null);
-    this.load();
-    this.refreshInterval = setInterval(() => this.load(), 30_000);
+    await Promise.all([this.load(), this.loadSuscriptores()]);
+    this.refreshInterval = setInterval(() => {
+      this.load();
+      this.loadSuscriptores();
+    }, 30_000);
   }
 
-  ngOnDestroy() {
-    clearInterval(this.refreshInterval);
-  }
+  ngOnDestroy() { clearInterval(this.refreshInterval); }
 
   async load() {
-    const { data } = await this.userActivity.getAll();
-    this.users.set(data ?? []);
+    const { data } = await this.partidaSvc.getAll();
+    this.partidas.set((data as Partida[]) ?? []);
     this.loading.set(false);
   }
 
-  async forceLogout(userId: string) {
-    this.closing.set(userId);
-    await this.userActivity.setOffline(userId);
-    await this.userActivity.broadcastForceLogout(userId);
-    this.users.update((list) =>
-      list.map((u) => (u.user_id === userId ? { ...u, is_online: false } : u))
+  async loadSuscriptores() {
+    this.loadingSubs.set(true);
+    const [{ data: subs }, { data: activity }] = await Promise.all([
+      this.suscripcionSvc.getByProducto('NexaTeg'),
+      this.activitySvc.getAll(),
+    ]);
+    this.suscriptores.set((subs as Suscripcion[]) ?? []);
+    const online = new Set<string>(
+      ((activity ?? []) as any[]).filter(a => a.is_online).map(a => a.user_id)
     );
-    this.closing.set(null);
+    this.onlineUserIds.set(online);
+    this.loadingSubs.set(false);
   }
 
-  get onlineCount() {
-    return this.users().filter((u) => u.is_online).length;
+  isOnline(userId: string): boolean {
+    return this.onlineUserIds().has(userId);
+  }
+
+  get misPartidas() {
+    return this.partidas().filter(p => p.HostPartida === this.userState.userId());
+  }
+
+  get otrasPartidas() {
+    return this.partidas().filter(p => p.HostPartida !== this.userState.userId());
+  }
+
+  get activasCount() {
+    return this.partidas().filter(p => p.PartidaActiva).length;
+  }
+
+  get activeSuscriptoresCount() {
+    return this.suscriptores().filter(s => this.isOnline(s.id_usuario)).length;
+  }
+
+  abrirForm() {
+    this.form = { idProducto: 'NexaTeg', NombrePartida: '', ClavePartida: '', LimiteJugadores: 2, PartidaActiva: false };
+    this.error.set('');
+    this.showClave.set(false);
+    this.showForm.set(true);
+  }
+
+  cancelar() { this.showForm.set(false); }
+
+  async crear() {
+    if (!this.form.ClavePartida.trim()) {
+      this.error.set('La clave de partida es requerida.');
+      return;
+    }
+    this.saving.set(true);
+    this.error.set('');
+    try {
+      const { data, error } = await this.partidaSvc.create({
+        idProducto:      this.form.idProducto.trim(),
+        NombrePartida:   this.form.NombrePartida.trim() || null,
+        ClavePartida:    this.form.ClavePartida.trim() || null,
+        LimiteJugadores: this.form.LimiteJugadores,
+        PartidaActiva:   this.form.PartidaActiva,
+        HostPartida:     this.userState.userId(),
+      });
+      if (error) throw error;
+      this.partidas.update(list => [data as Partida, ...list]);
+      this.showForm.set(false);
+    } catch (err: any) {
+      this.error.set(err.message ?? 'Error al crear la partida.');
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  async toggleActiva(p: Partida) {
+    this.togglingId.set(p.idPartida);
+    const nuevoEstado = !p.PartidaActiva;
+    await this.partidaSvc.toggleActiva(p.idPartida, nuevoEstado);
+    this.partidas.update(list =>
+      list.map(x => x.idPartida === p.idPartida ? { ...x, PartidaActiva: nuevoEstado } : x)
+    );
+    this.togglingId.set(null);
+  }
+
+  async eliminar(p: Partida) {
+    this.deletingId.set(p.idPartida);
+    await this.partidaSvc.delete(p.idPartida);
+    this.partidas.update(list => list.filter(x => x.idPartida !== p.idPartida));
+    this.deletingId.set(null);
   }
 }

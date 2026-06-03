@@ -1,19 +1,43 @@
-<nav>
+<nav [class.nexateg-nav]="isNexaTeg()">
   <div class="container nav-container">
-    <a routerLink="/" class="logo">
-      <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
-        <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
-          fill="rgba(0,212,200,0.08)" stroke="url(#snb)" stroke-width="2.2" stroke-linejoin="round"/>
-        <line x1="16" y1="2"  x2="16" y2="7.5" stroke="url(#snb)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="16" y1="24.5" x2="16" y2="30" stroke="url(#snb)" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="16" cy="16" r="4" fill="url(#snb)"/>
-        <circle cx="16" cy="16" r="6.5" fill="none" stroke="url(#snb)" stroke-width="1" opacity="0.3"/>
-        <defs><linearGradient id="snb" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#7C5CFC"/><stop offset="100%" stop-color="#00BCD4"/>
-        </linearGradient></defs>
-      </svg>
-      <span class="logo-text">Nexa<em>Build</em></span>
-    </a>
+
+    <!-- Logo: NexaBuild por defecto, NexaTeg en /nexateg -->
+    @if (isNexaTeg()) {
+      <a routerLink="/nexateg" class="logo">
+        <svg width="32" height="32" viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="13" r="10" fill="none" stroke="url(#nth-nav)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
+          <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nth-nav)"/>
+          <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nth-nav)"/>
+          <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nth-nav)"/>
+          <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nth-nav)"/>
+          <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nth-nav)" stroke-width="0.8" opacity="0.35"/>
+          <circle cx="13" cy="13" r="2.2" fill="url(#nth-nav)"/>
+          <defs>
+            <linearGradient id="nth-nav" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#FF4757"/>
+              <stop offset="100%" stop-color="#E05C8A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">Nexa<em class="teg-em">Teg</em></span>
+      </a>
+    } @else {
+      <a routerLink="/" class="logo">
+        <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
+          <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
+            fill="rgba(0,212,200,0.08)" stroke="url(#snb)" stroke-width="2.2" stroke-linejoin="round"/>
+          <line x1="16" y1="2"  x2="16" y2="7.5" stroke="url(#snb)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="24.5" x2="16" y2="30" stroke="url(#snb)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="4" fill="url(#snb)"/>
+          <circle cx="16" cy="16" r="6.5" fill="none" stroke="url(#snb)" stroke-width="1" opacity="0.3"/>
+          <defs><linearGradient id="snb" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7C5CFC"/><stop offset="100%" stop-color="#00BCD4"/>
+          </linearGradient></defs>
+        </svg>
+        <span class="logo-text">Nexa<em>Build</em></span>
+      </a>
+    }
+
     <div class="nav-actions">
       @if (isLoggedIn()) {
         <div class="nav-user-area" (click)="$event.stopPropagation()">
@@ -42,23 +66,45 @@
   <router-outlet />
 </main>
 
-<footer>
+<footer [class.nexateg-footer]="isNexaTeg()">
   <div class="footer-inner">
-    <p>© 2026 NexaBuild — Montevideo, Uruguay</p>
-    <a routerLink="/" class="logo">
-      <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
-        <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
-          fill="rgba(0,212,200,0.08)" stroke="url(#snbf)" stroke-width="2.2" stroke-linejoin="round"/>
-        <line x1="16" y1="2"  x2="16" y2="7.5" stroke="url(#snbf)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="16" y1="24.5" x2="16" y2="30" stroke="url(#snbf)" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="16" cy="16" r="4" fill="url(#snbf)"/>
-        <circle cx="16" cy="16" r="6.5" fill="none" stroke="url(#snbf)" stroke-width="1" opacity="0.3"/>
-        <defs><linearGradient id="snbf" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#7C5CFC"/><stop offset="100%" stop-color="#00BCD4"/>
-        </linearGradient></defs>
-      </svg>
-      <span class="logo-text">Nexa<em>Build</em></span>
-    </a>
+    <p>© 2026 {{ isNexaTeg() ? 'NexaTeg' : 'NexaBuild' }} — Montevideo, Uruguay</p>
+
+    @if (isNexaTeg()) {
+      <a routerLink="/nexateg" class="logo">
+        <svg width="32" height="32" viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="13" r="10" fill="none" stroke="url(#nth-foot)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
+          <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nth-foot)"/>
+          <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nth-foot)"/>
+          <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nth-foot)"/>
+          <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nth-foot)"/>
+          <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nth-foot)" stroke-width="0.8" opacity="0.35"/>
+          <circle cx="13" cy="13" r="2.2" fill="url(#nth-foot)"/>
+          <defs>
+            <linearGradient id="nth-foot" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#FF4757"/>
+              <stop offset="100%" stop-color="#E05C8A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">Nexa<em class="teg-em">Teg</em></span>
+      </a>
+    } @else {
+      <a routerLink="/" class="logo">
+        <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
+          <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
+            fill="rgba(0,212,200,0.08)" stroke="url(#snbf)" stroke-width="2.2" stroke-linejoin="round"/>
+          <line x1="16" y1="2"  x2="16" y2="7.5" stroke="url(#snbf)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="24.5" x2="16" y2="30" stroke="url(#snbf)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="4" fill="url(#snbf)"/>
+          <circle cx="16" cy="16" r="6.5" fill="none" stroke="url(#snbf)" stroke-width="1" opacity="0.3"/>
+          <defs><linearGradient id="snbf" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7C5CFC"/><stop offset="100%" stop-color="#00BCD4"/>
+          </linearGradient></defs>
+        </svg>
+        <span class="logo-text">Nexa<em>Build</em></span>
+      </a>
+    }
   </div>
 </footer>
 

@@ -56,7 +56,7 @@ export class App implements OnInit, OnDestroy {
         this.userName.set('');
         sessionStorage.removeItem(USER_NAME_KEY);
         sessionStorage.removeItem(USER_ADMIN_KEY);
-        this.router.navigate(['/']);
+        window.location.href = '/';
       }
     });
   }
@@ -121,6 +121,6 @@ export class App implements OnInit, OnDestroy {
     this.userName.set('');
     sessionStorage.removeItem(USER_NAME_KEY);
     sessionStorage.removeItem(USER_ADMIN_KEY);
-    this.router.navigate(['/']);
+    window.location.href = '/';
   }
 }

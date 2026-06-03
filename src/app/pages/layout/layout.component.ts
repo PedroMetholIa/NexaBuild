@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, HostListener } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { Component, OnInit, signal, HostListener, effect } from '@angular/core';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { UserActivityService } from '../../services/user-activity.service';
+import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthComponent } from '../auth/auth.component';
 
 @Component({
@@ -12,19 +13,37 @@ import { AuthComponent } from '../auth/auth.component';
   styleUrl: './layout.component.css',
 })
 export class LayoutComponent implements OnInit {
-  isLoggedIn = signal(!!sessionStorage.getItem('nx_user_name'));
-  userName   = signal(sessionStorage.getItem('nx_user_name') ?? '');
-  modalOpen = signal(false);
+  isLoggedIn  = signal(!!sessionStorage.getItem('nx_user_name'));
+  userName    = signal(sessionStorage.getItem('nx_user_name') ?? '');
+  modalOpen   = signal(false);
   modalRegister = signal(false);
-  menuOpen = signal(false);
+  menuOpen    = signal(false);
+  isNexaTeg   = signal(false);
 
   constructor(
     private auth: AuthService,
     private usuarioService: UsuarioService,
-    private userActivity: UserActivityService
-  ) {}
+    private userActivity: UserActivityService,
+    private authModalSvc: AuthModalService,
+    private router: Router,
+  ) {
+    effect(() => {
+      if (this.authModalSvc.solicitado()) {
+        this.modalRegister.set(false);
+        this.modalOpen.set(true);
+        this.authModalSvc.limpiar();
+      }
+    });
+  }
 
   async ngOnInit() {
+    this.isNexaTeg.set(this.router.url.startsWith('/nexateg'));
+    this.router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        this.isNexaTeg.set(e.urlAfterRedirects.startsWith('/nexateg'));
+      }
+    });
+
     const { data: sessionData } = await this.auth.getSession();
     if (sessionData.session) {
       await this.loadUser(sessionData.session.user.id, sessionData.session.user.user_metadata);

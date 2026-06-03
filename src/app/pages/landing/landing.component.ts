@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { SuscripcionService } from '../../services/suscripcion.service';
 import { UserStateService } from '../../services/user-state.service';
+import { AuthModalService } from '../../services/auth-modal.service';
 import { Producto } from '../../models/producto';
 
 @Component({
@@ -13,7 +14,8 @@ import { Producto } from '../../models/producto';
 })
 export class LandingComponent implements OnInit {
   // inject() como field initializer — se resuelve antes que los campos dependientes
-  private readonly userState = inject(UserStateService);
+  private readonly userState    = inject(UserStateService);
+  private readonly authModalSvc = inject(AuthModalService);
 
   readonly currentUserId     = this.userState.userId;
   readonly misSubscripciones = this.userState.misSubscripciones;
@@ -93,6 +95,11 @@ export class LandingComponent implements OnInit {
   navigate(producto: Producto) {
     const route = this.productRoutes[producto.id_producto];
     if (route) this.router.navigate([route]);
+  }
+
+  abrirLoginModal() {
+    this.selectedProducto.set(null);
+    this.authModalSvc.solicitar();
   }
 
   submitForm() { this.submitted.set(true); }

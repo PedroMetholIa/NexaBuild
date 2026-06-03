@@ -1,95 +1,243 @@
 <div class="page">
+
+  <!-- Header -->
   <div class="page-header">
     <div>
-      <div class="page-brand">
-        <svg width="32" height="32" viewBox="0 0 210 32" fill="none">
-          <circle cx="13" cy="13" r="10" fill="none" stroke="url(#nth1)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
-          <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#nth1)"/>
-          <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#nth1)"/>
-          <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#nth1)"/>
-          <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#nth1)"/>
-          <line x1="16.5" y1="9.5" x2="18.5" y2="7.5" stroke="url(#nth1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-          <line x1="9.5" y1="9.5" x2="7.5" y2="7.5" stroke="url(#nth1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-          <line x1="16.5" y1="16.5" x2="18.5" y2="18.5" stroke="url(#nth1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-          <line x1="9.5" y1="16.5" x2="7.5" y2="18.5" stroke="url(#nth1)" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
-          <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#nth1)" stroke-width="0.8" opacity="0.35"/>
-          <circle cx="13" cy="13" r="2.2" fill="url(#nth1)"/>
-          <defs>
-            <linearGradient id="nth1" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#FF4757"/>
-              <stop offset="100%" stop-color="#E05C8A"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <span class="brand-text">Nexa<em>Teg</em></span>
-      </div>
-      <h1>Jugadores activos</h1>
-      <p class="subtitle">Sesiones en partida y su estado en tiempo real</p>
+      <h1>Partidas</h1>
+      <p class="subtitle">Gestión de partidas y suscriptores</p>
     </div>
-    <div class="stats">
-      <div class="stat-badge online">
-        <span class="dot"></span>
-        {{ onlineCount }} en línea
-      </div>
-      <div class="stat-badge total">
-        {{ users().length }} total
+    <div class="header-right">
+      <div class="stats">
+        <div class="stat-badge online">
+          <span class="dot"></span>
+          {{ activeSuscriptoresCount }} jugadores activos
+        </div>
+        <div class="stat-badge total">
+          <i class="ti ti-device-gamepad-2"></i>
+          {{ misPartidas.length }} partidas creadas
+        </div>
+        <div class="stat-badge subs">
+          <i class="ti ti-world"></i>
+          {{ otrasPartidas.length }} partidas disponibles
+        </div>
       </div>
     </div>
   </div>
 
-  @if (loading()) {
-    <div class="empty">Cargando...</div>
-  } @else if (users().length === 0) {
-    <div class="empty">No hay sesiones registradas aún.</div>
-  } @else {
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Jugador</th>
-            <th>Último login</th>
-            <th>Última actividad</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.user_id) {
-            <tr>
-              <td>
-                <div class="user-cell">
-                  <div class="avatar">
-                    {{ (user.usuario?.nombre ?? user.email)[0].toUpperCase() }}
-                  </div>
-                  <div class="user-info">
-                    @if (user.usuario) {
-                      <span class="user-name">{{ user.usuario.nombre }} {{ user.usuario.apellido }}</span>
-                    }
-                    <span class="user-email">{{ user.email }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>{{ user.last_login | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ user.last_seen | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>
-                <span class="badge" [class.badge-online]="user.is_online" [class.badge-offline]="!user.is_online">
-                  {{ user.is_online ? 'En partida' : 'Desconectado' }}
-                </span>
-              </td>
-              <td>
-                @if (user.is_online && user.user_id !== currentUserId()) {
-                  <button
-                    class="btn-force-logout"
-                    [disabled]="closing() === user.user_id"
-                    (click)="forceLogout(user.user_id)">
-                    {{ closing() === user.user_id ? 'Cerrando...' : 'Forzar cierre' }}
-                  </button>
-                }
-              </td>
-            </tr>
+  <!-- Modal nueva partida -->
+  @if (showForm()) {
+    <div class="modal-overlay" (click)="cancelar()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-head">
+          <div class="modal-title">
+            <i class="ti ti-device-gamepad-2"></i>
+            Nueva partida
+          </div>
+          <button class="modal-close" (click)="cancelar()" title="Cerrar">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Nombre de partida</label>
+              <input type="text" [(ngModel)]="form.NombrePartida" placeholder="Ej: Partida del viernes" />
+            </div>
+            <div class="form-field">
+              <label>Clave de partida <span class="required">*</span></label>
+              <div class="input-eye">
+                <input [type]="showClave() ? 'text' : 'password'"
+                       [(ngModel)]="form.ClavePartida"
+                       placeholder="Ej: NEXATEG-001" />
+                <button type="button" class="btn-eye" (click)="showClave.set(!showClave())"
+                        [title]="showClave() ? 'Ocultar clave' : 'Mostrar clave'">
+                  <i class="ti" [class.ti-eye]="!showClave()" [class.ti-eye-off]="showClave()"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Límite de jugadores</label>
+              <input type="number" [(ngModel)]="form.LimiteJugadores" min="2" max="6" />
+            </div>
+          </div>
+          @if (error()) {
+            <p class="form-error">{{ error() }}</p>
           }
-        </tbody>
-      </table>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+          <button class="btn-crear" [disabled]="saving()" (click)="crear()">
+            {{ saving() ? 'Guardando...' : 'Crear partida' }}
+          </button>
+        </div>
+      </div>
     </div>
   }
+
+  <!-- Dashboard grid -->
+  <div class="dashboard">
+
+    <!-- Jugadores (sidebar izquierdo) -->
+    <section class="panel panel-subs">
+      <div class="panel-head">
+        <div class="panel-title">
+          <i class="ti ti-users"></i>
+          Jugadores
+          <span class="badge-count badge-count--subs">{{ activeSuscriptoresCount }}</span>
+        </div>
+      </div>
+      @if (loadingSubs()) {
+        <div class="empty-state">Cargando...</div>
+      } @else if (suscriptores().length === 0) {
+        <div class="empty-state">
+          <i class="ti ti-user-plus empty-icon"></i>
+          <p>Sin jugadores aún.</p>
+        </div>
+      } @else {
+        <div class="subs-list">
+          @for (s of suscriptores(); track s.id) {
+            <div class="sub-row">
+              @if (isOnline(s.id_usuario)) {
+                <div class="avatar">{{ (s.usuario?.nombre ?? s.id_usuario)[0].toUpperCase() }}</div>
+              } @else {
+                <div class="avatar avatar--offline"><i class="ti ti-user"></i></div>
+              }
+              <div class="sub-info">
+                <span class="sub-name">{{ s.usuario ? s.usuario.nombre + ' ' + s.usuario.apellido : '—' }}</span>
+                <span class="sub-email">{{ s.usuario?.email ?? '—' }}</span>
+              </div>
+              <div class="sub-dates">
+                <span class="sub-since">{{ s.fecha_ing_sus | date: 'dd/MM/yy' }}</span>
+                @if (s.fecha_fin_sus) {
+                  <span class="sub-until">hasta {{ s.fecha_fin_sus | date: 'dd/MM/yy' }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Partidas creadas -->
+    <section class="panel panel-mis">
+      <div class="panel-head">
+        <div class="panel-title">
+          <i class="ti ti-device-gamepad-2"></i>
+          Partidas creadas
+          <span class="badge-count">{{ misPartidas.length }}</span>
+        </div>
+        <button class="btn-nueva" (click)="abrirForm()">
+          <i class="ti ti-plus"></i> Crear nueva partida
+        </button>
+      </div>
+      @if (loading()) {
+        <div class="empty-state">Cargando...</div>
+      } @else if (misPartidas.length === 0) {
+        <div class="empty-state">
+          <i class="ti ti-cards empty-icon"></i>
+          <p>No tenés partidas creadas aún.</p>
+        </div>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Clave</th>
+                <th>Límite Jugadores</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of misPartidas; track p.idPartida) {
+                <tr>
+                  <td class="col-id">{{ p.idPartida }}</td>
+                  <td>{{ p.NombrePartida ?? '—' }}</td>
+                  <td><span class="clave-badge">{{ p.ClavePartida ?? '—' }}</span></td>
+                  <td>{{ p.LimiteJugadores ?? '—' }}</td>
+                  <td>
+                    <span class="badge" [class.badge-activa]="p.PartidaActiva" [class.badge-inactiva]="!p.PartidaActiva">
+                      {{ p.PartidaActiva ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  </td>
+                  <td class="col-actions">
+                    <button class="btn-toggle" [class.btn-toggle--off]="p.PartidaActiva"
+                            [disabled]="togglingId() === p.idPartida"
+                            (click)="toggleActiva(p)"
+                            [title]="p.PartidaActiva ? 'Desactivar' : 'Activar'">
+                      <i class="ti" [class.ti-toggle-right]="p.PartidaActiva" [class.ti-toggle-left]="!p.PartidaActiva"></i>
+                    </button>
+                    <button class="btn-delete" [disabled]="deletingId() === p.idPartida"
+                            (click)="eliminar(p)" title="Eliminar">
+                      <i class="ti ti-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <!-- Partidas disponibles -->
+    <section class="panel panel-otras">
+      <div class="panel-head">
+        <div class="panel-title">
+          <i class="ti ti-world"></i>
+          Partidas disponibles
+          <span class="badge-count badge-count--otras">{{ otrasPartidas.length }}</span>
+        </div>
+      </div>
+      @if (loading()) {
+        <div class="empty-state">Cargando...</div>
+      } @else if (otrasPartidas.length === 0) {
+        <div class="empty-state">
+          <i class="ti ti-world-off empty-icon"></i>
+          <p>No hay partidas disponibles.</p>
+        </div>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Clave</th>
+                <th>Límite Jugadores</th>
+                <th>Host</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of otrasPartidas; track p.idPartida) {
+                <tr>
+                  <td class="col-id">{{ p.idPartida }}</td>
+                  <td>{{ p.NombrePartida ?? '—' }}</td>
+                  <td><span class="clave-badge clave-badge--otras">{{ p.ClavePartida ?? '—' }}</span></td>
+                  <td>{{ p.LimiteJugadores ?? '—' }}</td>
+                  <td class="col-host">
+                    @if (p.usuario) {
+                      {{ p.usuario.nombre }} {{ p.usuario.apellido }}
+                    } @else {
+                      <span class="col-muted">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="badge" [class.badge-activa]="p.PartidaActiva" [class.badge-inactiva]="!p.PartidaActiva">
+                      {{ p.PartidaActiva ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+  </div>
+
 </div>
