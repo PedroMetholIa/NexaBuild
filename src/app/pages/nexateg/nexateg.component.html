@@ -74,6 +74,26 @@
     </div>
   }
 
+  <!-- Modal partida iniciada -->
+  @if (showStartModal()) {
+    <div class="modal-overlay">
+      <div class="modal modal-start">
+        <div class="start-icon">
+          <i class="ti ti-rocket"></i>
+        </div>
+        <h2 class="start-title">¡Partida iniciada!</h2>
+        <p class="start-msg">La partida ha comenzado. Los jugadores ya pueden unirse al tablero.</p>
+        <div class="start-waiting">
+          <span class="start-dot"></span>
+          <span class="start-dot"></span>
+          <span class="start-dot"></span>
+          Esperando jugadores...
+        </div>
+        <button class="btn-cancelar" style="margin-top:1rem" (click)="showStartModal.set(false)">Cerrar</button>
+      </div>
+    </div>
+  }
+
   <!-- Dashboard grid -->
   <div class="dashboard">
 
@@ -142,33 +162,39 @@
           <table>
             <thead>
               <tr>
-                <th>#</th>
                 <th>Nombre</th>
                 <th>Clave</th>
-                <th>Límite Jugadores</th>
+                <th>Límite</th>
+                <th>Jugadores</th>
                 <th>Estado</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @for (p of misPartidas; track p.idPartida) {
                 <tr>
-                  <td class="col-id">{{ p.idPartida }}</td>
                   <td>{{ p.NombrePartida ?? '—' }}</td>
                   <td><span class="clave-badge">{{ p.ClavePartida ?? '—' }}</span></td>
                   <td>{{ p.LimiteJugadores ?? '—' }}</td>
+                  <td>{{ p.JugadoresRegistrados ?? 0 }}</td>
                   <td>
                     <span class="badge" [class.badge-activa]="p.PartidaActiva" [class.badge-inactiva]="!p.PartidaActiva">
                       {{ p.PartidaActiva ? 'Activa' : 'Inactiva' }}
                     </span>
                   </td>
-                  <td class="col-actions">
-                    <button class="btn-toggle" [class.btn-toggle--off]="p.PartidaActiva"
-                            [disabled]="togglingId() === p.idPartida"
-                            (click)="toggleActiva(p)"
-                            [title]="p.PartidaActiva ? 'Desactivar' : 'Activar'">
-                      <i class="ti" [class.ti-toggle-right]="p.PartidaActiva" [class.ti-toggle-left]="!p.PartidaActiva"></i>
+                  <td>
+                    <button class="btn-launch-txt"
+                            [disabled]="comenzandoId() === p.idPartida || (p.JugadoresRegistrados ?? 0) < (p.LimiteJugadores ?? 0)"
+                            (click)="comenzar(p)">
+                      <i class="ti ti-rocket"></i>
+                      {{ comenzandoId() === p.idPartida ? 'Iniciando...' : 'Comenzar' }}
                     </button>
+                    @if (startError() && comenzandoId() !== p.idPartida) {
+                      <p class="start-error-inline">{{ startError() }}</p>
+                    }
+                  </td>
+                  <td class="col-action">
                     <button class="btn-delete" [disabled]="deletingId() === p.idPartida"
                             (click)="eliminar(p)" title="Eliminar">
                       <i class="ti ti-trash"></i>
@@ -203,21 +229,22 @@
           <table>
             <thead>
               <tr>
-                <th>#</th>
                 <th>Nombre</th>
                 <th>Clave</th>
-                <th>Límite Jugadores</th>
+                <th>Límite</th>
+                <th>Jugadores</th>
                 <th>Host</th>
                 <th>Estado</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               @for (p of otrasPartidas; track p.idPartida) {
                 <tr>
-                  <td class="col-id">{{ p.idPartida }}</td>
                   <td>{{ p.NombrePartida ?? '—' }}</td>
                   <td><span class="clave-badge clave-badge--otras">{{ p.ClavePartida ?? '—' }}</span></td>
                   <td>{{ p.LimiteJugadores ?? '—' }}</td>
+                  <td>{{ p.JugadoresRegistrados ?? 0 }}</td>
                   <td class="col-host">
                     @if (p.usuario) {
                       {{ p.usuario.nombre }} {{ p.usuario.apellido }}
@@ -226,9 +253,20 @@
                     }
                   </td>
                   <td>
-                    <span class="badge" [class.badge-activa]="p.PartidaActiva" [class.badge-inactiva]="!p.PartidaActiva">
-                      {{ p.PartidaActiva ? 'Activa' : 'Inactiva' }}
-                    </span>
+                    @if (p.PartidaActiva) {
+                      <span class="badge badge-activa">Activa</span>
+                    } @else if ((p.JugadoresRegistrados ?? 0) >= (p.LimiteJugadores ?? 0)) {
+                      <span class="badge badge-espera">Esperando al Host</span>
+                    } @else {
+                      <span class="badge badge-inactiva">Inactiva</span>
+                    }
+                  </td>
+                  <td>
+                    <button class="btn-unirse-txt"
+                            [disabled]="joiningId() === p.idPartida || (p.JugadoresRegistrados ?? 0) >= (p.LimiteJugadores ?? 0)"
+                            (click)="unirse(p)">
+                      {{ joiningId() === p.idPartida ? 'Uniéndose...' : 'Unirse' }}
+                    </button>
                   </td>
                 </tr>
               }

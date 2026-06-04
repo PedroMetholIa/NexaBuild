@@ -63,3 +63,92 @@ main {
 main.has-nav {
   min-height: calc(100vh - 60px);
 }
+
+/* ── Modal sesión expirada ── */
+.session-expired-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 4, 14, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: se-fade-in .2s ease;
+}
+
+@keyframes se-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.session-expired-modal {
+  background: rgba(12, 16, 36, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 18px;
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(99, 102, 241, 0.12);
+  padding: 2.5rem 2.25rem 2rem;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  animation: se-slide-in .22s cubic-bezier(.34,1.3,.64,1);
+}
+
+@keyframes se-slide-in {
+  from { opacity: 0; transform: scale(.93) translateY(10px); }
+  to   { opacity: 1; transform: scale(1)  translateY(0); }
+}
+
+.session-expired-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  color: #818cf8;
+}
+
+.session-expired-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  letter-spacing: -.3px;
+}
+
+.session-expired-msg {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(195, 205, 235, 0.75);
+  line-height: 1.55;
+}
+
+.session-expired-btn {
+  margin-top: 0.5rem;
+  padding: 0.6rem 2rem;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s, transform .12s;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.38);
+}
+.session-expired-btn:hover {
+  opacity: .88;
+  transform: translateY(-1px);
+}

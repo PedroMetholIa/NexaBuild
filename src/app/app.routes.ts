@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
+import { nonAdminGuard } from './guards/non-admin.guard';
 
 export const routes: Routes = [
   {
@@ -9,6 +10,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        canActivate: [nonAdminGuard],
         loadComponent: () => import('./pages/landing/landing.component').then((m) => m.LandingComponent),
       },
       {
@@ -18,10 +20,12 @@ export const routes: Routes = [
       },
       {
         path: 'nexajuegos',
+        canActivate: [nonAdminGuard],
         loadComponent: () => import('./pages/nexajuegos/nexajuegos.component').then((m) => m.NexaJuegosComponent),
       },
       {
         path: 'nexateg',
+        canActivate: [nonAdminGuard],
         loadComponent: () => import('./pages/nexateg/nexateg.component').then((m) => m.NexaTegComponent),
       },
     ],
@@ -32,17 +36,17 @@ export const routes: Routes = [
   },
   {
     path: 'personas',
-    canActivate: [authGuard],
+    canActivate: [authGuard, nonAdminGuard],
     loadComponent: () => import('./pages/personas/personas.component').then((m) => m.PersonasComponent),
   },
   {
     path: 'personas/nueva',
-    canActivate: [authGuard],
+    canActivate: [authGuard, nonAdminGuard],
     loadComponent: () => import('./pages/persona-form/persona-form.component').then((m) => m.PersonaFormComponent),
   },
   {
     path: 'personas/:id/editar',
-    canActivate: [authGuard],
+    canActivate: [authGuard, nonAdminGuard],
     loadComponent: () => import('./pages/persona-form/persona-form.component').then((m) => m.PersonaFormComponent),
   },
 ];

@@ -35,7 +35,7 @@ export class UserActivityService {
   updateLastSeen(userId: string) {
     return this.client
       .from('user_activity')
-      .update({ last_seen: new Date().toISOString() })
+      .update({ last_seen: new Date().toISOString(), is_online: true })
       .eq('user_id', userId);
   }
 
@@ -44,6 +44,17 @@ export class UserActivityService {
       .from('user_activity')
       .select('*, usuario(nombre, apellido)')
       .order('last_seen', { ascending: false });
+  }
+
+  subscribeToActivityUpdates(onUpdate: (data: any) => void): RealtimeChannel {
+    return this.client
+      .channel('user_activity_updates')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'user_activity' },
+        (payload) => onUpdate(payload.new)
+      )
+      .subscribe();
   }
 
   // Escucha cambios de DB (requiere Realtime activo en Supabase) Y broadcasts del admin.

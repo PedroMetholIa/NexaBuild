@@ -1,0 +1,5 @@
+# Reemplazá "YOUR_PROJECT_REF" con el ID de tu proyecto Supabase
+# Lo encontrás en: Settings → General → Reference ID
+project_id = "YOUR_PROJECT_REF"
+
+[functions.cleanup-inactive-sessions]

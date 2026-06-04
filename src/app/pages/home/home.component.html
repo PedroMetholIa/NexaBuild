@@ -102,12 +102,12 @@
                 </div></td>
                 <td>{{ s.last_login | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ s.last_seen | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td><span class="badge" [class.badge-online]="s.is_online" [class.badge-offline]="!s.is_online">
-                  {{ s.is_online ? 'En línea' : 'Desconectado' }}
+                <td><span class="badge" [class.badge-online]="isActuallyOnline(s)" [class.badge-offline]="!isActuallyOnline(s)">
+                  {{ isActuallyOnline(s) ? 'En línea' : 'Desconectado' }}
                 </span></td>
                 <td class="actions">
                   <button class="btn-icon btn-edit" (click)="openEdit(s)" title="Editar estado"><i class="ti ti-pencil"></i></button>
-                  @if (s.is_online && s.user_id !== currentUserId()) {
+                  @if (isActuallyOnline(s) && s.user_id !== currentUserId()) {
                     <button class="btn-logout" [disabled]="closing() === s.user_id" (click)="forceLogout(s.user_id)">
                       {{ closing() === s.user_id ? 'Cerrando...' : 'Forzar cierre' }}
                     </button>

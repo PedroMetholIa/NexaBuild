@@ -261,7 +261,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // ── Helpers ────────────────────────────────────────────────────────
-  get onlineCount() { return this.sesiones().filter(u => u.is_online).length; }
+  private readonly ONLINE_THRESHOLD_MS = 20 * 60 * 1000;
+
+  isActuallyOnline(s: UserActivity): boolean {
+    if (!s.is_online) return false;
+    return Date.now() - new Date(s.last_seen).getTime() < this.ONLINE_THRESHOLD_MS;
+  }
+
+  get onlineCount() { return this.sesiones().filter(u => this.isActuallyOnline(u)).length; }
 
   modalTitle() {
     const mode = this.modalMode() === 'add' ? 'Agregar' : 'Editar';

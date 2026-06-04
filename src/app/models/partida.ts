@@ -6,5 +6,6 @@ export interface Partida {
   PartidaActiva: boolean | null;
   LimiteJugadores: number | null;
   HostPartida: string | null;
+  JugadoresRegistrados: number | null;
   usuario?: { nombre: string; apellido: string } | null;
 }

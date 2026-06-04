@@ -1,1 +1,19 @@
 <router-outlet />
+
+@if (showSessionExpiredModal()) {
+  <div class="session-expired-overlay">
+    <div class="session-expired-modal">
+      <div class="session-expired-icon">
+        <i class="ti ti-lock"></i>
+      </div>
+      <h2 class="session-expired-title">Sesión cerrada</h2>
+      <p class="session-expired-msg">
+        Tu sesión fue cerrada automáticamente por inactividad prolongada.
+        Vuelve a iniciar sesión para continuar.
+      </p>
+      <button class="session-expired-btn" (click)="closeSessionModal()">
+        Entendido
+      </button>
+    </div>
+  </div>
+}

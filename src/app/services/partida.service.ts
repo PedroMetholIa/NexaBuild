@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { RealtimeChannel } from '@supabase/supabase-js';
 import { Supabase } from './supabase';
 import { Partida } from '../models/partida';
 
@@ -9,19 +10,33 @@ export class PartidaService {
   getAll() {
     return this.client
       .from('partida')
-      .select('*, usuario!partida_HostPartida_fkey(nombre, apellido)')
+      .select('idPartida, idProducto, NombrePartida, ClavePartida, PartidaActiva, LimiteJugadores, JugadoresRegistrados, HostPartida, usuario!partida_HostPartida_fkey(nombre, apellido)')
       .order('idPartida', { ascending: false });
   }
 
-  create(data: Omit<Partida, 'idPartida'>) {
+  create(data: Omit<Partida, 'idPartida' | 'JugadoresRegistrados' | 'usuario'>) {
     return this.client.from('partida').insert(data).select().single();
   }
 
-  toggleActiva(idPartida: number, activa: boolean) {
+  addJugador(idPartida: number, idUsuario: string) {
     return this.client
-      .from('partida')
-      .update({ PartidaActiva: activa })
-      .eq('idPartida', idPartida);
+      .from('partida_jugador')
+      .insert({ id_partida: idPartida, id_usuario: idUsuario });
+  }
+
+  comenzarPartida(idPartida: number) {
+    return this.client.rpc('comenzar_partida', { p_id_partida: idPartida });
+  }
+
+  subscribeToUpdates(onUpdate: (partida: Partial<Partida>) => void): RealtimeChannel {
+    return this.client
+      .channel('partidas_realtime')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'partida' },
+        (payload) => onUpdate(payload.new as Partial<Partida>)
+      )
+      .subscribe();
   }
 
   delete(idPartida: number) {
