@@ -28,6 +28,11 @@ export const routes: Routes = [
         canActivate: [nonAdminGuard],
         loadComponent: () => import('./pages/nexateg/nexateg.component').then((m) => m.NexaTegComponent),
       },
+      {
+        path: 'nexateg/game',
+        canActivate: [authGuard, nonAdminGuard],
+        loadComponent: () => import('./pages/nexatag-game/nexatag-game.component').then((m) => m.NexaTagGameComponent),
+      },
     ],
   },
   {

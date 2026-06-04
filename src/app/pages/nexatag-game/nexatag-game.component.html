@@ -1,0 +1,43 @@
+<div class="game-page">
+  <div class="game-header">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 26 26" fill="none">
+        <circle cx="13" cy="13" r="10" fill="none" stroke="url(#g-nav)" stroke-width="0.7" stroke-dasharray="1.5 1.8" opacity="0.28"/>
+        <path d="M 13 2.5 L 15 8 L 13 10 L 11 8 Z" fill="url(#g-nav)"/>
+        <path d="M 23.5 13 L 18 15 L 16 13 L 18 11 Z" fill="url(#g-nav)"/>
+        <path d="M 13 23.5 L 15 18 L 13 16 L 11 18 Z" fill="url(#g-nav)"/>
+        <path d="M 2.5 13 L 8 11 L 10 13 L 8 15 Z" fill="url(#g-nav)"/>
+        <circle cx="13" cy="13" r="4.5" fill="none" stroke="url(#g-nav)" stroke-width="0.8" opacity="0.35"/>
+        <circle cx="13" cy="13" r="2.2" fill="url(#g-nav)"/>
+        <defs>
+          <linearGradient id="g-nav" x1="0" y1="0" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#FF4757"/>
+            <stop offset="100%" stop-color="#E05C8A"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-text">Nexa<em>Teg</em></span>
+    </div>
+    @if (idPartida()) {
+      <span class="partida-badge">Partida #{{ idPartida() }}</span>
+    }
+  </div>
+
+  <div class="game-center">
+    <div class="game-card">
+      <div class="game-icon">
+        <i class="ti ti-device-gamepad-2"></i>
+      </div>
+      <h1>¡Partida en curso!</h1>
+      <p class="game-sub">El tablero de juego está en desarrollo. Pronto podrás jugar desde aquí.</p>
+      <div class="game-dots">
+        <span class="gdot"></span>
+        <span class="gdot"></span>
+        <span class="gdot"></span>
+      </div>
+      <a routerLink="/nexateg" class="btn-back">
+        <i class="ti ti-arrow-left"></i> Volver al lobby
+      </a>
+    </div>
+  </div>
+</div>

@@ -74,22 +74,19 @@
     </div>
   }
 
-  <!-- Modal partida iniciada -->
-  @if (showStartModal()) {
+  <!-- Modal: partida iniciada (jugadores no-host) -->
+  @if (gameStarted()) {
     <div class="modal-overlay">
       <div class="modal modal-start">
         <div class="start-icon">
-          <i class="ti ti-rocket"></i>
+          <i class="ti ti-device-gamepad-2"></i>
         </div>
-        <h2 class="start-title">¡Partida iniciada!</h2>
-        <p class="start-msg">La partida ha comenzado. Los jugadores ya pueden unirse al tablero.</p>
-        <div class="start-waiting">
-          <span class="start-dot"></span>
-          <span class="start-dot"></span>
-          <span class="start-dot"></span>
-          Esperando jugadores...
-        </div>
-        <button class="btn-cancelar" style="margin-top:1rem" (click)="showStartModal.set(false)">Cerrar</button>
+        <h2 class="start-title">¡La partida comenzó!</h2>
+        <p class="start-msg">El host inició la partida. Abrí el tablero para jugar.</p>
+        <button class="btn-crear" style="margin-top:0.75rem; padding:0.6rem 1.75rem" (click)="abrirJuego()">
+          <i class="ti ti-external-link"></i>&nbsp; Abrir tablero
+        </button>
+        <button class="btn-cancelar" style="margin-top:0.5rem" (click)="gameStarted.set(false)">Ignorar</button>
       </div>
     </div>
   }
@@ -127,9 +124,10 @@
                 <span class="sub-email">{{ s.usuario?.email ?? '—' }}</span>
               </div>
               <div class="sub-dates">
-                <span class="sub-since">{{ s.fecha_ing_sus | date: 'dd/MM/yy' }}</span>
-                @if (s.fecha_fin_sus) {
-                  <span class="sub-until">hasta {{ s.fecha_fin_sus | date: 'dd/MM/yy' }}</span>
+                @if (lastSeenMap().get(s.id_usuario)) {
+                  <span class="sub-since">{{ lastSeenMap().get(s.id_usuario) | date: 'dd/MM/yy HH:mm' }}</span>
+                } @else {
+                  <span class="sub-since">—</span>
                 }
               </div>
             </div>
@@ -146,10 +144,10 @@
           Partidas creadas
           <span class="badge-count">{{ misPartidas.length }}</span>
         </div>
-        <button class="btn-nueva" (click)="abrirForm()">
-          <i class="ti ti-plus"></i> Crear nueva partida
-        </button>
       </div>
+      @if (deleteError()) {
+        <div class="delete-error">{{ deleteError() }}</div>
+      }
       @if (loading()) {
         <div class="empty-state">Cargando...</div>
       } @else if (misPartidas.length === 0) {
@@ -217,6 +215,9 @@
           <span class="badge-count badge-count--otras">{{ otrasPartidas.length }}</span>
         </div>
       </div>
+      @if (joinError()) {
+        <div class="delete-error">{{ joinError() }}</div>
+      }
       @if (loading()) {
         <div class="empty-state">Cargando...</div>
       } @else if (otrasPartidas.length === 0) {
@@ -276,6 +277,21 @@
       }
     </section>
 
+  </div>
+
+  <div class="fab-row">
+    <a class="btn-back-fab" href="/nexajuegos">
+      <i class="ti ti-arrow-left"></i>
+      <span>Volver al inicio</span>
+    </a>
+    <button class="btn-refresh-fab" (click)="recargar()">
+      <i class="ti ti-refresh"></i>
+      <span>Refrescar</span>
+    </button>
+    <button class="btn-nueva-fab" (click)="abrirForm()">
+      <i class="ti ti-plus"></i>
+      <span>Crear nueva partida</span>
+    </button>
   </div>
 
 </div>

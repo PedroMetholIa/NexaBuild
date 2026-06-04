@@ -25,18 +25,14 @@ export class UserActivityService {
     );
   }
 
-  setOffline(userId: string) {
-    return this.client
-      .from('user_activity')
-      .update({ is_online: false, last_seen: new Date().toISOString() })
-      .eq('user_id', userId);
+  setOffline(_userId: string) {
+    return this.client.rpc('set_my_offline');
   }
 
-  updateLastSeen(userId: string) {
-    return this.client
-      .from('user_activity')
-      .update({ last_seen: new Date().toISOString(), is_online: true })
-      .eq('user_id', userId);
+  updateLastSeen(_userId: string) {
+    return this.client.rpc('update_my_last_seen').then(({ error }) => {
+      if (error) console.error('[updateLastSeen] RPC error:', error.message);
+    });
   }
 
   getAll() {

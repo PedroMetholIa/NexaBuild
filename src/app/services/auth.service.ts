@@ -36,6 +36,10 @@ export class AuthService {
     return this.client.auth.updateUser({ data });
   }
 
+  refreshSession() {
+    return this.client.auth.refreshSession();
+  }
+
   onAuthChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return this.client.auth.onAuthStateChange(callback);
   }

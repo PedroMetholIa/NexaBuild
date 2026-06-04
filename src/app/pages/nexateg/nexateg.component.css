@@ -308,6 +308,16 @@ h1 {
 
 .form-error { font-size: 0.8125rem; color: var(--ac); margin: 0.875rem 0 0; }
 
+.delete-error {
+  margin: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,71,87,0.12);
+  border: 1px solid rgba(255,71,87,0.35);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  color: #ff6b7a;
+}
+
 .btn-cancelar {
   padding: 0.5rem 1rem;
   background: rgba(255,255,255,0.06);
@@ -505,7 +515,75 @@ h1 {
   font-weight: 700;
 }
 
-/* ── Botón nueva partida ── */
+/* ── Fila de botones inferior ── */
+.fab-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem 0 0.5rem;
+}
+
+.btn-back-fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  background: rgba(255,255,255,0.07);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, transform .12s;
+}
+.btn-back-fab:hover {
+  background: rgba(255,255,255,0.13);
+  transform: translateY(-2px);
+}
+
+.btn-refresh-fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ddd6fe;
+  background: rgba(139,92,246,0.22);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s, transform .12s;
+}
+.btn-refresh-fab:hover {
+  background: rgba(139,92,246,0.35);
+  transform: translateY(-2px);
+}
+
+.btn-nueva-fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--ac);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255,71,87,0.40);
+  transition: opacity .15s, transform .12s, box-shadow .15s;
+}
+.btn-nueva-fab:hover {
+  opacity: .9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255,71,87,0.52);
+}
+
+/* ── Botón nueva partida (legacy, sin uso) ── */
 .btn-nueva {
   display: inline-flex;
   align-items: center;
