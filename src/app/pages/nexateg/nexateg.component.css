@@ -583,26 +583,6 @@ h1 {
   box-shadow: 0 6px 22px rgba(255,71,87,0.52);
 }
 
-/* ── Botón nueva partida (legacy, sin uso) ── */
-.btn-nueva {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0.35rem 0.85rem;
-  background: linear-gradient(135deg, #FF4757, #E05C8A);
-  color: #fff;
-  border: none;
-  border-radius: 7px;
-  font-size: 0.82rem;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity .15s, transform .12s;
-  box-shadow: 0 3px 12px rgba(255,71,87,0.36);
-  white-space: nowrap;
-}
-.btn-nueva:hover { opacity: .88; transform: translateY(-1px); }
-
 /* ══ TABLAS ══════════════════════════════════ */
 
 .table-wrap {
